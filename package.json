@@ -1,0 +1,45 @@
+{
+  "name": "ToL-Mod-Utility",
+  "version": "1.3.0",
+  "productName": "ToL-Mod-Utility",
+  "description": "Moderation utility for Throne of Lies player reports.",
+  "main": "./src/client",
+  "dependencies": {
+    "vue-chat-scroll": "^1.2.0"
+  },
+  "devDependencies": {
+    "electron": "^1.7.5",
+    "electron-packager": "^8.7.2",
+    "electron-winstaller": "^2.6.3",
+    "eslint": "^4.4.1",
+    "htmlhint": "^0.9.13",
+    "vue-devtools": "^3.1.6"
+  },
+  "scripts": {
+    "test": "eslint src && htmlhint",
+    "build-x64": "electron-packager . ToL-Mod-Utility --platform win32 --arch x64 --asar=true --out dist/ --overwrite --prune  --icon=./src/icon.ico --app-bundle-id=robflop --helper-bundle-id=robflop --version-string.CompanyName=\"robflop\" --version-string.ProductName=ToL-Mod-Utility --version-string.FileDescription=ToL-Mod-Utility --version-string.LegalCopyright=\"Copyright (C) 2017 robflop\" --version-string.InternalName=robflop --version-string.OriginalFilename=ToL-Mod-Utility.exe",
+    "build-ia32": "electron-packager . ToL-Mod-Utility --platform win32 --arch ia32 --asar=true --out dist/ --overwrite --prune  --icon=./src/icon.ico --app-bundle-id=robflop --helper-bundle-id=robflop --version-string.CompanyName=\"robflop\" --version-string.ProductName=ToL-Mod-Utility --version-string.FileDescription=ToL-Mod-Utility --version-string.LegalCopyright=\"Copyright (C) 2017 robflop\" --version-string.InternalName=robflop --version-string.OriginalFilename=ToL-Mod-Utility.exe",
+    "build-win": "npm run build-x64 && npm run build-ia32",
+    "setup": "node makeInstallers.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robflop/ToL-Mod-Utility.git"
+  },
+  "keywords": [
+	"utility",
+	"throne of lies",
+	"moderation",
+    "electron",
+    "node"
+  ],
+  "author": "robflop",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/robflop/ToL-Mod-Utility/issues"
+  },
+  "homepage": "https://github.com/robflop/ToL-Mod-Utility#readme",
+  "engines": {
+    "node": ">=7.9.0"
+  }
+}
