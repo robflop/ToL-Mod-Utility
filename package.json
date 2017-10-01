@@ -4,9 +4,7 @@
   "productName": "ToL-Mod-Utility",
   "description": "Moderation utility for Throne of Lies player reports.",
   "main": "./src/client",
-  "dependencies": {
-    "vue-chat-scroll": "^1.2.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "electron": "^1.7.5",
     "electron-packager": "^8.7.2",
