@@ -1,0 +1,119 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+html {
+    height: 100%;
+    width: 100%;
+    display: table;
+}
+
+body {
+    display: table-cell;
+    min-height: 100%;
+    vertical-align: middle;
+	position: relative;
+	font-family: "Open Sans"
+}
+
+form {
+	margin-top: 5vh;
+}
+
+form > input, form > label, form > select {
+	margin: 10px auto;
+	display: block;
+}
+
+ul > li {
+	margin-top: 10px;
+}
+
+#app {
+	height: 100vh;
+	display: grid;
+	grid-template-columns: 20% 80%;
+	grid-template-areas: "input-config display-area"
+}
+
+#input-config-wrapper, #display-wrapper {
+	display: grid;
+	grid-template-columns: 100%;
+	grid-template-rows: 50% 50%;
+	grid-template-areas: "top"
+						 "bottom";
+	margin: 10px;
+	height: calc(100vh - 26px);
+	border: solid;
+	position: relative;
+	font-size: 13px;
+	border-style: solid;
+	overflow: hidden;
+	word-wrap: break-word;
+}
+
+#input-config-wrapper {
+	grid-area: input-config;
+	text-align: center;
+}
+
+#display-wrapper {
+	grid-area: display-area;
+}
+
+#input-wrapper, #match-info-wrapper {
+	grid-area: top;
+	border-bottom: solid;
+	overflow: auto;
+}
+
+#config-wrapper, #chat-log-wrapper {
+	grid-area: bottom;
+	overflow: auto;
+}
+
+#chat-log-wrapper {
+	margin-left: 10px;
+}
+
+.day {
+	color: #00ff00;
+}
+
+.alive {
+	color: #00b2ff;
+}
+
+.system {
+	color: #ff9803;
+}
+
+.mind-link {
+	color: #add8e6;
+}
+
+.attack {
+	color: #ff0000;
+}
+
+.crier {
+	color: #ffffff;
+}
+
+.dead {
+	color: #c0c0c0;
+}
+
+.heal {
+	color: #008000;
+}
+
+.win {
+	color: #00ff00;
+}
+
+.announcement {
+	color: #ffff00;
+}
+
+.whisper {
+	color: #EE5FFF;
+}

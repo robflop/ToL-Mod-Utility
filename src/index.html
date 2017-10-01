@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>ToL Mod Utility</title>
+		<link rel="stylesheet" href="./index.css">
+		<script src="https://unpkg.com/vue@2.4.2/dist/vue.js"></script>
+	</head>
+
+	<body>
+		<div id="app">
+			<div id="input-config-wrapper">
+				<div id="input-wrapper">
+					<form id="input" method="post">
+						<label for="match-info">Match Info: </label>
+						<input id="match-info" type="text" v-model.trim="matchInfoInput">
+
+						<label for="chat-logs">Chat logs: </label>
+						<input id="chat-logs" type="text" v-model.trim="chatLogsInput">
+
+						<input id="input-load" type="submit" value="Load Match" @click.prevent="loadMatch()">
+						<input id="input-unload" type="submit" value="Unload Match" @click.prevent="unloadMatch()">
+					</form>
+				</div>
+				<div id="config-wrapper">
+					<form id="config" method="post">
+						<label for="type-select">Type filter: </label>
+						<select id="type-select" v-model="selectedType" @change="filter" :disabled="!isLoaded">
+							<option selected>All</option>
+							<option>Day</option>
+							<option>Alive</option>
+							<option>System</option>
+							<option>Mind Link</option>
+							<option>Attack</option>
+							<option>Crier</option>
+							<option>Dead</option>
+							<option>Heal</option>
+							<option>Win</option>
+							<option>Announcement</option>
+							<option>Whisper</option>
+						</select>
+
+						<label for="player-select">Player filter: </label>
+						<select id="player-select" v-model="selectedPlayer" @change="filter" :disabled="!isLoaded">
+							<option selected>All</option>
+							<option v-for="player in parsedMatchInfo">{{ player.IGN }}</option>
+						</select>
+
+						<label for="day-select">Day filter: </label>
+						<select id="day-select" v-model="selectedDay" @change="filter" :disabled="!isLoaded">
+							<option selected>All</option>
+							<option v-for="day in days">Day {{ day }}</option>
+						</select>
+
+						<label for="night-select">Night filter: </label>
+						<select id="night-select" v-model="selectedNight" @change="filter" :disabled="!isLoaded">
+							<option selected>All</option>
+							<option v-for="night in nights">Night {{ night }}</option>
+						</select>
+
+						<label for="everyone">Only Involved?</label>
+						<input type="checkbox" id="involvedCheck" v-model="involvedFilter" @change="filter" :disabled="!isLoaded">
+					</form>
+				</div>
+			</div>
+			<div id="display-wrapper">
+				<div id="match-info-wrapper">
+					<ul> 
+						<li v-for="player in parsedMatchInfo">
+							{{ player.IGN }} ({{ player.displayName }}), {{ player.startClass }} ({{ player.startFaction }})
+							→ {{ player.finalClass }} ({{ player.finalFaction }}).
+							Won? {{ player.won }}. ({{ player.playerId }})
+						</li>
+					</ul>
+				</div>
+				<div id="chat-log-wrapper">
+					<p v-for="log in parsedChatLogs" :class="checkType(log)"> {{ log }}</p>
+				</div>
+			</div>
+		</div>
+
+		<script src="index.js"></script>
+	</body>
+</html>
