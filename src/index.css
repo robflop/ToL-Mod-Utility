@@ -31,7 +31,9 @@ ul > li {
 	height: 100vh;
 	display: grid;
 	grid-template-columns: 20% 80%;
-	grid-template-areas: "input-config display-area"
+	grid-template-areas: "input-config display-area";
+	background-color: #222;
+	color: #ddd;
 }
 
 #input-config-wrapper, #display-wrapper {
