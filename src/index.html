@@ -4,7 +4,7 @@
 		<meta charset="UTF-8">
 		<title>ToL Mod Utility</title>
 		<link rel="stylesheet" href="./index.css">
-		<script src="https://unpkg.com/vue@2.4.2/dist/vue.js"></script>
+		<script src="https://unpkg.com/vue@2.4.2/dist/vue.min.js"></script>
 	</head>
 
 	<body>
@@ -20,6 +20,8 @@
 
 						<input id="input-load" type="submit" value="Load Match" @click.prevent="loadMatch()">
 						<input id="input-unload" type="submit" value="Unload Match" @click.prevent="unloadMatch()">
+
+						<div style="color:red; margin-top:35px;"><span v-if="!chatLogsInput || !matchInfoInput">Enter Match info and Chat logs!</span></div>
 					</form>
 				</div>
 				<div id="config-wrapper">
@@ -58,9 +60,6 @@
 							<option selected>All</option>
 							<option v-for="night in nights">Night {{ night }}</option>
 						</select>
-
-						<label for="everyone">Only Involved?</label>
-						<input type="checkbox" id="involvedCheck" v-model="involvedFilter" @change="filter" :disabled="!isLoaded">
 					</form>
 				</div>
 			</div>
