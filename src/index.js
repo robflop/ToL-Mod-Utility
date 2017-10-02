@@ -64,6 +64,7 @@ const app = new Vue({
 
 					this.parsedChatLogs = this[this.isFiltered ? 'parsedChatLogs' : 'savedChatLogs'].filter(line => {
 						return line.startsWith(`(${this.selectedType}`) || line.startsWith('(Day)') || line.startsWith('(Win)');
+						// fyi to future self, the missing closing bracket in the type check is intended
 					});
 				}
 

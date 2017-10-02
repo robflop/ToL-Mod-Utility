@@ -87,7 +87,7 @@ ul > li {
 }
 
 .mind-link {
-	color: #add8e6;
+	color: #5100ff;
 }
 
 .attack {
@@ -110,7 +110,7 @@ ul > li {
 	color: #00ff00;
 }
 
-.announcement {
+.announcement, .private-announcement {
 	color: #ffff00;
 }
 
