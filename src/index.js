@@ -44,7 +44,7 @@ const app = new Vue({
 
 			let logType;
 
-			types.some((type, i, types) => {
+			types.some((type, i, types) => { // eslint-disable-line array-callback-return
 				if (log.toLowerCase().startsWith(`(${type}`)) return logType = type;
 			});
 
