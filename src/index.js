@@ -16,7 +16,7 @@ const app = new Vue({
 	},
 	methods: {
 		loadMatch() {
-			if (!this.matchInfoInput || this.chatLogsInput) return;
+			if (!this.matchInfoInput || !this.chatLogsInput) return;
 
 			this.parsedMatchInfo = JSON.parse(this.matchInfoInput);
 			this.parsedChatLogs = JSON.parse(this.chatLogsInput).filter(line => line).map(line => line.trim());
