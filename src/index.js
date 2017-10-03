@@ -19,12 +19,12 @@ const app = new Vue({
 			if (!this.matchInfoInput || !this.chatLogsInput) return;
 
 			this.parsedMatchInfo = JSON.parse(this.matchInfoInput);
-			this.parsedChatLogs = JSON.parse(this.chatLogsInput).filter(line => line).map(line => line.trim());
+			this.parsedChatLogs = this.chatLogsInput.split('，').filter(line => line).map(line => line.trim());
+			// fullwidth comma is seperation value for lines in raw logs
 			this.savedChatLogs = this.parsedChatLogs;
 			this.days = this.savedChatLogs.filter(line => /\(Day\) Day \d+/.test(line)).length;
 			this.nights = this.savedChatLogs.filter(line => /\(Day\) Night \d+/.test(line)).length;
 
-			this.filter();
 			return this.isLoaded = true;
 		},
 
