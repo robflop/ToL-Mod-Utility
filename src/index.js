@@ -20,8 +20,8 @@ const app = new Vue({
 
 			this.parsedMatchInfo = JSON.parse(this.matchInfoInput.replace(/[“”]/g, '"'));
 			// match info from forums has weird quotes, thus replacing them cause they error otherwise
-			this.parsedChatLogs = this.chatLogsInput.split('，').filter(line => line).map(line => line.trim());
-			// fullwidth comma is seperation value for lines in raw logs
+			this.parsedChatLogs = this.chatLogsInput.split('¬').filter(line => line).map(line => line.trim());
+			// this "not sign" character is the line seperator in raw report logs
 			this.savedChatLogs = this.parsedChatLogs;
 			this.days = this.savedChatLogs.filter(line => /\(Day\) Day \d+/.test(line)).length;
 			this.nights = this.savedChatLogs.filter(line => /\(Day\) Night \d+/.test(line)).length;
