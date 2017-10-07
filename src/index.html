@@ -65,13 +65,13 @@
 			</div>
 			<div id="display-wrapper">
 				<div id="match-info-wrapper">
-					<ul> 
+					<ol> 
 						<li v-for="player in parsedMatchInfo">
 							{{ player.IGN }} ({{ player.displayName }}), {{ player.startClass }} ({{ player.startFaction }})
 							→ {{ player.finalClass }} ({{ player.finalFaction }}).
 							Won? {{ player.won }}. ({{ player.playerId }})
 						</li>
-					</ul>
+					</ol>
 				</div>
 				<div id="chat-log-wrapper">
 					<p v-for="log in parsedChatLogs" :class="checkType(log)"> {{ log }}</p>
