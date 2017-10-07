@@ -37,16 +37,33 @@ const app = new Vue({
 			return this.isLoaded = false;
 		},
 
+		checkFaction(playerFaction) {
+			const factions = ['unseen', 'cult', 'neutral'];
+			// blue dragon manually matched below due to reasons also below
+
+			let faction;
+
+			factions.some(fact => { // eslint-disable-line array-callback-return
+				if (playerFaction.replace(/\s+/g, '-').toLowerCase() === fact) return faction = fact;
+				// replace spaces with dashes because can't have spaces in css class names
+			});
+
+			if (playerFaction === 'BlueDragon') return 'blue-dragon';
+			// bd isn't seperated by a space, so matching and replacing that to be compliant with css names would be messy
+			else return faction;
+		},
+
 		checkType(log) {
 			const types = [
-				'day', 'alive', 'system', 'mind link', 'attack', 'crier',
+				'day', 'alive', 'system', 'mind-link', 'attack', 'crier',
 				'dead', 'heal', 'win', 'announcement', 'privateannouncement'
 			]; // no type for whisper because that's regex'd below due to formatting
 
 			let logType;
 
-			types.some((type, i, types) => { // eslint-disable-line array-callback-return
-				if (log.toLowerCase().startsWith(`(${type}`)) return logType = type;
+			types.some(type => { // eslint-disable-line array-callback-return
+				if (log.toLowerCase().replace(/\s+/g, '-').startsWith(`(${type}`)) return logType = type;
+				// replace spaces with dashes because can't have spaces in css class names
 			});
 
 			if (/^From ([\w\s]+) \[\d+\]/.test(log)) return 'whisper';
