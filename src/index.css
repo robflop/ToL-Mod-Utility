@@ -23,7 +23,7 @@ form > input, form > label, form > select {
 	display: block;
 }
 
-ul > li {
+ol > li {
 	margin-top: 10px;
 }
 
