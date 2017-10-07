@@ -69,9 +69,13 @@
 				<div id="match-info-wrapper">
 					<ol> 
 						<li v-for="player in parsedMatchInfo">
-							{{ player.IGN }} ({{ player.displayName }}), {{ player.startClass }} ({{ player.startFaction }})
-							→ {{ player.finalClass }} ({{ player.finalFaction }}).
-							Won? {{ player.won }}. ({{ player.playerId }})
+							<span class="playerName">{{ player.IGN }} ({{ player.displayName }})</span>
+							:
+							<span class="playerStart" :class="checkFaction(player.startFaction)">{{ player.startClass }} ({{ player.startFaction }})</span>
+							→
+							<span class="playerEnd" :class="checkFaction(player.finalFaction)">{{ player.finalClass }} ({{ player.finalFaction }}).</span>
+							<span class="playerResult" :class="player.won ? 'won' : 'lost'">Won? {{ player.won }}.</span>
+							<span class="playerId">({{ player.playerId }})</span>
 						</li>
 					</ol>
 				</div>

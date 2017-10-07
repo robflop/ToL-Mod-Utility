@@ -11,7 +11,7 @@ body {
     min-height: 100%;
     vertical-align: middle;
 	position: relative;
-	font-family: "Open Sans"
+	font-family: "Open Sans";
 }
 
 form {
@@ -77,32 +77,58 @@ ol > li {
 	margin-left: 10px;
 }
 
+.blue-dragon {
+	color: #00A3FF;
+}
+
+.unseen {
+	/* color: #720373;  < actual unseen color from logo */
+	color: #AF05B2; /* lighter for easier readability */
+}
+
+.cult {
+	color: #870E00;
+}
+
+.neutral {
+	color: #FFFFFF;
+}
+
+.won {
+	color: #00FF00;
+}
+
+.lost {
+	color: #FF0000;
+}
+
 .day {
-	color: #00ff00;
+	color: #00FF00;
 }
 
 .alive {
-	color: #00b2ff;
+	color: #00B2FF;
 }
 
 .system {
-	color: #ff9803;
+	color: #FF9803;
 }
 
 .mind-link {
-	color: #5100ff;
+	/* color: #5100FF; < actual color from forum report logs */
+	color: #5137FF; /* lighter for easier readability */
 }
 
 .attack {
-	color: #ff0000;
+	color: #FF0000;
 }
 
 .crier {
-	color: #ffffff;
+	color: #FFFFFF;
 }
 
 .dead {
-	color: #c0c0c0;
+	color: #C0C0C0;
 }
 
 .heal {
@@ -110,11 +136,11 @@ ol > li {
 }
 
 .win {
-	color: #00ff00;
+	color: #00FF00;
 }
 
 .announcement, .private-announcement {
-	color: #ffff00;
+	color: #FFFF00;
 }
 
 .whisper {
