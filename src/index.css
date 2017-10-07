@@ -21,6 +21,7 @@ form {
 form > input, form > label, form > select {
 	margin: 10px auto;
 	display: block;
+	max-width: 95%;
 }
 
 ol > li {
