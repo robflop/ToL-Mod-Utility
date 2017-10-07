@@ -46,7 +46,9 @@
 						<label for="player-select">Player filter: </label>
 						<select id="player-select" v-model="selectedPlayer" @change="filter" :disabled="!isLoaded">
 							<option selected>All</option>
-							<option v-for="player in parsedMatchInfo">{{ player.IGN }}</option>
+							<option v-for="player in parsedMatchInfo">
+								[{{ parsedMatchInfo.findIndex(p => p.IGN === player.IGN) + 1 }}] {{ player.IGN }}
+							</option>
 						</select>
 
 						<label for="day-select">Day filter: </label>
