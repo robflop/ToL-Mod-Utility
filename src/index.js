@@ -18,7 +18,7 @@ const app = new Vue({
 		loadMatch() {
 			if (!this.matchInfoInput || !this.chatLogsInput) return;
 
-			this.parsedMatchInfo = JSON.parse(this.matchInfoInput.replace(/[“”]/g, '"'));
+			this.parsedMatchInfo = JSON.parse(this.matchInfoInput.replace(/[“”'`]/g, '"'));
 			// match info from forums has weird quotes, thus replacing them cause they error otherwise
 			this.parsedChatLogs = this.chatLogsInput.split('¬').filter(line => line).map(line => line.trim());
 			// this "not sign" character is the line seperator in raw report logs
