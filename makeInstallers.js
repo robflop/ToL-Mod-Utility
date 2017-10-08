@@ -24,10 +24,10 @@ const settings = {
 
 return createWindowsInstaller(settings)
 	.then(() => {
-		console.log('Installer successfully created.');
+		console.log(`Installer successfully created for version ${version} on win32-${arch}`);
 		process.exit();
 	})
 	.catch(e => {
-		console.log(`An error occurred creating the installer: ${e.message}`);
+		console.log(`An error occurred creating the installer for version ${version} on win32-${arch}: ${e.message}`);
 		process.exit();
 	});
