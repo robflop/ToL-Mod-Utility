@@ -1,6 +1,6 @@
 {
   "name": "ToL-Mod-Utility",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "productName": "ToL-Mod-Utility",
   "description": "Moderation utility for Throne of Lies player reports.",
   "main": "./src/client",
@@ -18,7 +18,7 @@
     "build-x64": "node buildWin.js x64",
     "build-ia32": "node buildWin.js",
     "build-win": "npm run build-x64 && npm run build-ia32",
-    "setup": "node makeInstallers.js"
+    "setup": "node makeInstallers.js && node makeInstallers.js x64"
   },
   "repository": {
     "type": "git",
