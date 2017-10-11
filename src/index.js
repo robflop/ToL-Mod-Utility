@@ -26,13 +26,15 @@ const app = new Vue({
 			this.days = this.savedChatLogs.filter(line => /\(Day\) Day \d+/.test(line)).length;
 			this.nights = this.savedChatLogs.filter(line => /\(Day\) Night \d+/.test(line)).length;
 
+			this.clearFilter(); // for loading another match without unloading first
+
 			return this.isLoaded = true;
 		},
 
 		unloadMatch() {
 			this.chatLogsInput = this.matchInfoInput = this.parsedMatchInfo = this.parsedChatLogs = this.savedChatLogs = '';
-			this.selectedType = this.selectedPlayer = this.selectedDay = this.selectedNight = 'All';
 			this.days = this.nights = 0;
+			this.clearFilter();
 
 			return this.isLoaded = false;
 		},
@@ -128,7 +130,11 @@ const app = new Vue({
 				});
 			}
 
-			this.parsedChatLogs = chatLogs;
+			return this.parsedChatLogs = chatLogs;
+		},
+
+		clearFilter() {
+			return this.selectedType = this.selectedPlayer = this.selectedDay = this.selectedNight = 'All';
 		}
 	}
 });
