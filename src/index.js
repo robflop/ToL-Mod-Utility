@@ -80,15 +80,16 @@ const app = new Vue({
 				if (this.selectedType === 'Whisper') {
 					// whispers are special because they don't follow the format of other types
 					const whisperRegex = /From [\w\s]+ \[\d+] \([\w\s]+\):/;
-					return chatLogs = chatLogs.filter(line => {
+					chatLogs = chatLogs.filter(line => {
 						return whisperRegex.test(line) || line.startsWith('(Day)') || line.startsWith('(Win)');
 					});
 				}
-
-				chatLogs = chatLogs.filter(line => {
-					return line.startsWith(`(${this.selectedType}`) || line.startsWith('(Day)') || line.startsWith('(Win)');
-					// fyi to future self, the missing closing bracket in the type check is intended
-				});
+				else {
+					chatLogs = chatLogs.filter(line => {
+						return line.startsWith(`(${this.selectedType}`) || line.startsWith('(Day)') || line.startsWith('(Win)');
+						// fyi to future self, the missing closing bracket in the type check is intended
+					});
+				}
 			}
 
 			if (this.selectedPlayer !== 'All') {
