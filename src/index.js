@@ -11,6 +11,7 @@ const app = new Vue({
 		selectedPlayer: 'All',
 		selectedDay: 'All',
 		selectedNight: 'All',
+		seperatorsToggle: false,
 		days: 0,
 		nights: 0
 	},
@@ -37,6 +38,17 @@ const app = new Vue({
 			this.clearFilter();
 
 			return this.isLoaded = false;
+		},
+
+		seperatorCheck(log) {
+			const classes = [];
+			if (this.seperatorsToggle) {
+				classes.push('seperator');
+				if (['announcement', 'privateannouncement'].includes(this.checkType(log))) classes.push('seperatorThick');
+				else classes.push('seperatorThin');
+			}
+
+			return classes;
 		},
 
 		checkFaction(playerFaction) {

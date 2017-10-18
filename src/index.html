@@ -63,6 +63,9 @@
 							<option selected>All</option>
 							<option v-for="night in nights">Night {{ night }}</option>
 						</select>
+
+						<label for="seperators-toggle">Line seperators: </label>
+						<input id="seperators-toggle" type="checkbox" v-model.trim="seperatorsToggle" :disabled="!isLoaded">
 					</form>
 				</div>
 			</div>
@@ -81,7 +84,7 @@
 					</ol>
 				</div>
 				<div id="chat-log-wrapper">
-					<p v-for="log in parsedChatLogs" :class="checkType(log)"> {{ log }}</p>
+					<p v-for="log in parsedChatLogs" :class="[checkType(log), seperatorCheck(log)]"> {{ log }}</p>
 				</div>
 			</div>
 		</div>

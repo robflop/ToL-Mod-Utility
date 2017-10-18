@@ -77,6 +77,19 @@ ol > li {
 	margin-left: 10px;
 }
 
+.seperator {
+	border-style: solid hidden;
+	border-color: white;
+}
+
+.seperatorThin {
+	border-width: 1px;
+}
+
+.seperatorThick {
+	border-width: 2px;
+}
+
 .blue-dragon {
 	color: #00A3FF;
 }
