@@ -58,7 +58,7 @@ const app = new Vue({
 		checkType(log) {
 			const types = [
 				'day', 'alive', 'system', 'mind-link', 'attack', 'crier',
-				'dead', 'heal', 'win', 'announcement', 'privateannouncement'
+				'dead', 'heal', 'win', 'announcement', 'privateannouncement', 'trollbox'
 			]; // no type for whisper because that's regex'd below due to formatting
 
 			let logType;
