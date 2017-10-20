@@ -105,10 +105,6 @@ const app = new Vue({
 			}
 
 			if (this.selectedPlayer !== 'All') {
-				// this.selectedPlayer = this.selectedPlayer.replace(/\[\d+\]/, '');
-				// // take out player number indicator from dropdown selection in replace
-
-				// const playerRegex = new RegExp(`${this.selectedPlayer} \\[\\d+\\]`);
 				chatLogs = chatLogs.filter(line => {
 					return line.includes(this.selectedPlayer) || line.startsWith('(Day)') || line.startsWith('(Win)');
 				});
