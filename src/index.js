@@ -105,10 +105,12 @@ const app = new Vue({
 			}
 
 			if (this.selectedPlayer !== 'All') {
-				const playerRegex = new RegExp(`${this.selectedPlayer.replace(/\[\d+\]/, '')} \\[\\d+\\]`);
-				// take out player number indicator from dropdown selection in replace
+				// this.selectedPlayer = this.selectedPlayer.replace(/\[\d+\]/, '');
+				// // take out player number indicator from dropdown selection in replace
+
+				// const playerRegex = new RegExp(`${this.selectedPlayer} \\[\\d+\\]`);
 				chatLogs = chatLogs.filter(line => {
-					return playerRegex.test(line) || line.startsWith('(Day)') || line.startsWith('(Win)');
+					return line.includes(this.selectedPlayer) || line.startsWith('(Day)') || line.startsWith('(Win)');
 				});
 			}
 

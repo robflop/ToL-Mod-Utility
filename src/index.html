@@ -48,7 +48,7 @@
 						<select id="player-select" v-model="selectedPlayer" @change="filter" :disabled="!isLoaded">
 							<option selected>All</option>
 							<option v-for="player in parsedMatchInfo">
-								[{{ parsedMatchInfo.findIndex(p => p.IGN === player.IGN) + 1 }}] {{ player.IGN }}
+								{{ player.IGN }} [{{ parsedMatchInfo.findIndex(p => p.IGN === player.IGN) + 1 }}]
 							</option>
 						</select>
 
