@@ -15,17 +15,21 @@ body {
 }
 
 form {
-	margin-top: 5vh;
+	margin-top: 4vh;
 }
 
-form > input, form > label, form > select {
+form select, form input, form label {
 	margin: 10px auto;
 	display: block;
 	max-width: 95%;
 }
 
-ol > li {
-	margin-top: 10px;
+#player-filter input, #player-filter label, input[id^="view-"], label[for^="view-"] {
+    display: inline;
+}
+
+ol > li, #player-filter {
+	margin: 10px auto;
 }
 
 #app {
