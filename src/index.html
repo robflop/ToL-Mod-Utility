@@ -24,51 +24,74 @@
 						<div style="color:red; margin-top:35px;"><span v-if="!chatLogsInput || !matchInfoInput">Enter Match info and Chat logs!</span></div>
 					</form>
 				</div>
+
 				<div id="config-wrapper">
 					<form id="config" method="post">
-						<label for="type-select">Type filter: </label>
-						<select id="type-select" v-model="selectedType" @change="filter" :disabled="!isLoaded">
-							<option selected>All</option>
-							<option>Day</option>
-							<option>Alive</option>
-							<option>System</option>
-							<option>Mind Link</option>
-							<option>Attack</option>
-							<option>Crier</option>
-							<option>Dead</option>
-							<option>Heal</option>
-							<option>Win</option>
-							<option>Announcement</option>
-							<option>PrivateAnnouncement</option>
-							<option>Whisper</option>
-							<option>Trollbox</option>
-						</select>
+						<div>
+							<input type="radio" id="view-general" value="generalConfig" name="viewSelect" v-model="view" :disabled="!isLoaded">
+							<label for="view-general">General Options</label>
+						</div>
+						<div>
+							<input type="radio" id="view-players" value="playerFilter" name="viewSelect" v-model="view" :disabled="!isLoaded">
+							<label for="view-players">Player filter</label>
+						</div>
 
-						<label for="player-select">Player filter: </label>
-						<select id="player-select" v-model="selectedPlayer" @change="filter" :disabled="!isLoaded">
-							<option selected>All</option>
-							<option v-for="player in parsedMatchInfo">
-								{{ player.IGN }} [{{ parsedMatchInfo.findIndex(p => p.IGN === player.IGN) + 1 }}]
-							</option>
-						</select>
+						<div id="general-config" v-show="view === 'generalConfig'">
+							<label for="type-select">Type filter: </label>
+							<select id="type-select" v-model="selectedType" @change="filter" :disabled="!isLoaded">
+								<option selected>All</option>
+								<option>Day</option>
+								<option>Alive</option>
+								<option>System</option>
+								<option>Mind Link</option>
+								<option>Attack</option>
+								<option>Crier</option>
+								<option>Dead</option>
+								<option>Heal</option>
+								<option>Win</option>
+								<option>Announcement</option>
+								<option>PrivateAnnouncement</option>
+								<option>Whisper</option>
+								<option>Trollbox</option>
+							</select>
+						
+							<label for="day-select">Day filter: </label>
+							<select id="day-select" v-model="selectedDay" @change="filter" :disabled="!isLoaded">
+								<option selected>All</option>
+								<option v-for="day in days">Day {{ day }}</option>
+							</select>
+						
+							<label for="night-select">Night filter: </label>
+							<select id="night-select" v-model="selectedNight" @change="filter" :disabled="!isLoaded">
+								<option selected>All</option>
+								<option v-for="night in nights">Night {{ night }}</option>
+							</select>
+						
+							<label for="seperators-toggle">Line seperators: </label>
+							<input id="seperators-toggle" type="checkbox" v-model.trim="seperatorsToggle" :disabled="!isLoaded">
+						</div>
 
-						<label for="day-select">Day filter: </label>
-						<select id="day-select" v-model="selectedDay" @change="filter" :disabled="!isLoaded">
-							<option selected>All</option>
-							<option v-for="day in days">Day {{ day }}</option>
-						</select>
-
-						<label for="night-select">Night filter: </label>
-						<select id="night-select" v-model="selectedNight" @change="filter" :disabled="!isLoaded">
-							<option selected>All</option>
-							<option v-for="night in nights">Night {{ night }}</option>
-						</select>
-
-						<label for="seperators-toggle">Line seperators: </label>
-						<input id="seperators-toggle" type="checkbox" v-model.trim="seperatorsToggle" :disabled="!isLoaded">
+						<div id="player-filter" v-show="view === 'playerFilter'">
+							<form method="post">
+								<div v-for="player in parsedMatchInfo">
+									<input
+										type="checkbox"
+										:id="`${player.IGN}-selector`"
+										:value="`${player.IGN} [${parsedMatchInfo.findIndex(p => p.IGN === player.IGN) + 1}]`"
+										v-model="selectedPlayers"
+										@click="filter"
+										:disabled="!isLoaded"
+									>
+									<label :for="`${player.IGN}-selector`">
+										{{ player.IGN }} [{{ parsedMatchInfo.findIndex(p => p.IGN === player.IGN) + 1 }}]
+									</label>
+								</div>
+							</form>
+						</div>
 					</form>
 				</div>
 			</div>
+
 			<div id="display-wrapper">
 				<div id="match-info-wrapper">
 					<ol> 
@@ -83,6 +106,7 @@
 						</li>
 					</ol>
 				</div>
+
 				<div id="chat-log-wrapper">
 					<p v-for="log in parsedChatLogs" :class="[checkType(log), seperatorCheck(log)]"> {{ log }}</p>
 				</div>

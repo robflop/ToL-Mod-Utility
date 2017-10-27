@@ -7,11 +7,12 @@ const app = new Vue({
 		savedChatLogs: '',
 		parsedMatchInfo: '',
 		parsedChatLogs: '',
+		view: 'generalConfig',
 		selectedType: 'All',
-		selectedPlayer: 'All',
 		selectedDay: 'All',
 		selectedNight: 'All',
 		seperatorsToggle: false,
+		selectedPlayers: [],
 		days: 0,
 		nights: 0
 	},
@@ -104,9 +105,9 @@ const app = new Vue({
 				}
 			}
 
-			if (this.selectedPlayer !== 'All') {
+			if (this.selectedPlayers.length) {
 				chatLogs = chatLogs.filter(line => {
-					return line.includes(this.selectedPlayer) || line.startsWith('(Day)') || line.startsWith('(Win)');
+					return this.selectedPlayers.some(player => line.includes(player) || line.startsWith('(Day)') || line.startsWith('(Win)'));
 				});
 			}
 
