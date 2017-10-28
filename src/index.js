@@ -146,7 +146,9 @@ const app = new Vue({
 		},
 
 		clearFilter() {
-			return this.selectedType = this.selectedPlayer = this.selectedDay = this.selectedNight = 'All';
+			this.selectedPlayers = [];
+			this.view = 'generalConfig';
+			this.selectedType = this.selectedDay = this.selectedNight = 'All';
 		}
 	}
 });
