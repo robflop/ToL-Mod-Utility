@@ -18,8 +18,8 @@
 						<label for="chat-logs">Chat logs: </label>
 						<input id="chat-logs" type="text" v-model.trim="chatLogsInput">
 
-						<input id="input-load" type="submit" value="Load Match" @click.prevent="loadMatch()">
-						<input id="input-unload" type="submit" value="Unload Match" @click.prevent="unloadMatch()">
+						<input id="input-load" type="submit" value="Load Match" @click.prevent="loadMatch()" :disabled="isLoaded">
+						<input id="input-unload" type="submit" value="Unload Match" @click.prevent="unloadMatch()" :disabled="!isLoaded">
 
 						<div style="color:red; margin-top:35px;"><span v-if="!chatLogsInput || !matchInfoInput">Enter Match info and Chat logs!</span></div>
 					</form>
