@@ -161,6 +161,7 @@ const app = new Vue({
 		clearFilter() {
 			this.selectedPlayers = [];
 			this.view = 'generalConfig';
+			this.seperatorsToggle = false;
 			this.selectedType = this.selectedDay = this.selectedNight = 'All';
 		}
 	}
