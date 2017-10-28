@@ -13,6 +13,7 @@ const app = new Vue({
 		selectedNight: 'All',
 		seperatorsToggle: false,
 		selectedPlayers: [],
+		dayNightConflict: false,
 		days: 0,
 		nights: 0
 	},
@@ -89,6 +90,10 @@ const app = new Vue({
 			let chatLogs = this.savedChatLogs;
 			// base (unmodified) logs
 
+			if (this.selectedDay !== 'All' && this.selectedNight !== 'All') this.dayNightConflict = true;
+			else this.dayNightConflict = false;
+			// when both day and night are filtered for
+
 			if (this.selectedType !== 'All') {
 				if (this.selectedType === 'Whisper') {
 					// whispers are special because they don't follow the format of other types
@@ -114,7 +119,7 @@ const app = new Vue({
 			if (this.selectedDay !== 'All') {
 				const start = chatLogs.indexOf(`(Day) ${this.selectedDay}`);
 				let end = chatLogs.indexOf(`(Day) Night ${parseInt(this.selectedDay.replace('Day', ''))}`);
-
+				// last line of the day is the first line of the following night
 				const iterated = [];
 
 				if (parseInt(this.selectedDay.replace('Day', '')) === this.days) end = chatLogs.length;
@@ -131,7 +136,7 @@ const app = new Vue({
 			if (this.selectedNight !== 'All') {
 				const start = chatLogs.indexOf(`(Day) ${this.selectedNight}`);
 				const end = chatLogs.indexOf(`(Day) Day ${parseInt(this.selectedNight.replace('Night', '')) + 1}`);
-
+				// last line of the night is the first line of the following day
 				const iterated = [];
 
 				chatLogs = chatLogs.filter((line, index) => {
@@ -141,6 +146,14 @@ const app = new Vue({
 					// to avoid logs from other phases that have the same content as the one from this phase
 				});
 			}
+
+			if (this.dayNightConflict) {
+				return this.parsedChatLogs = [
+					'[Utility Info] Filtering for a specific Night and specific Day at the same time is not possible.',
+					'[Utility Info] Please unselect either the Night filter or the Day filter for the filter to function.',
+					'[Utility Info] Thank you very much, and apologies for the inconvenience.'
+				];
+			} // display error info if both day and night were filtered by, because that doesn't make sense
 
 			return this.parsedChatLogs = chatLogs;
 		},
