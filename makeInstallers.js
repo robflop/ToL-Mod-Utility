@@ -17,7 +17,7 @@ const settings = {
 	outputDirectory: join(appDirectory, '..', 'windows-installer'),
 	exe: 'ToL-Mod-Utility.exe',
 	setupExe: `ToL-Mod-UtilityInstaller-${version}-${arch}.exe`,
-	description: 'ToL-Mod-Utility',
+	description: 'Throne of Lies Mod Utility',
 	noMsi: true,
 	title: 'ToL-Mod-Utility',
 	iconURL: 'https://github.com/robflop/ToL-Mod-Utility/raw/master/src/icon.ico',
