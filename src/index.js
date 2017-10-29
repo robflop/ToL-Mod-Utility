@@ -12,7 +12,8 @@ const app = new Vue({
 		selectedDay: 'All',
 		selectedNight: 'All',
 		seperatorsToggle: false,
-		selectedPlayers: [],
+		filteredPlayers: [],
+		highlightedPlayers: [],
 		dayNightConflict: false,
 		days: 0,
 		nights: 0
@@ -29,8 +30,6 @@ const app = new Vue({
 			this.days = this.savedChatLogs.filter(line => /\(Day\) Day \d+/.test(line)).length;
 			this.nights = this.savedChatLogs.filter(line => /\(Day\) Night \d+/.test(line)).length;
 
-			this.clearFilter(); // for loading another match without unloading first
-
 			return this.isLoaded = true;
 		},
 
@@ -42,13 +41,14 @@ const app = new Vue({
 			return this.isLoaded = false;
 		},
 
-		seperatorCheck(log) {
+		extraStylingCheck(log) {
 			const classes = [];
 			if (this.seperatorsToggle) {
 				classes.push('seperator');
-				if (['announcement', 'privateannouncement'].includes(this.checkType(log))) classes.push('seperatorThick');
-				else classes.push('seperatorThin');
+				if (['announcement', 'privateannouncement'].includes(this.checkType(log))) classes.push('seperator-thick');
+				else classes.push('seperator-thin');
 			}
+			if (this.highlightedPlayers.length && this.highlightedPlayers.some(player => log.includes(player))) classes.push('highlight');
 
 			return classes;
 		},
@@ -110,9 +110,9 @@ const app = new Vue({
 				}
 			}
 
-			if (this.selectedPlayers.length) {
+			if (this.filteredPlayers.length) {
 				chatLogs = chatLogs.filter(line => {
-					return this.selectedPlayers.some(player => line.includes(player) || line.startsWith('(Day)') || line.startsWith('(Win)'));
+					return this.filteredPlayers.some(player => line.includes(player) || line.startsWith('(Day)') || line.startsWith('(Win)'));
 				});
 			}
 
@@ -159,9 +159,9 @@ const app = new Vue({
 		},
 
 		clearFilter() {
-			this.selectedPlayers = [];
 			this.view = 'generalConfig';
 			this.seperatorsToggle = false;
+			this.filteredPlayers = this.highlightedPlayers = [];
 			this.selectedType = this.selectedDay = this.selectedNight = 'All';
 		}
 	}
