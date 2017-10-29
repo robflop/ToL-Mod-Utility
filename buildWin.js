@@ -16,7 +16,7 @@ const buildOptions = {
 	win32metadata: {
 		CompanyName: 'robflop',
 		ProductName: 'ToL-Mod-Utility',
-		FileDescription: 'Moderation utility for Throne of Lies player reports.',
+		FileDescription: 'Throne of Lies Mod Utility',
 		OriginalFilename: 'ToL-Mod-Utility.exe'
 	}
 };
