@@ -14,14 +14,16 @@
 					<form id="input" method="post">
 						<label for="match-info">Match Info: </label>
 						<input id="match-info" type="text" v-model.trim="matchInfoInput">
-
+					
 						<label for="chat-logs">Chat logs: </label>
 						<input id="chat-logs" type="text" v-model.trim="chatLogsInput">
-
+					
 						<input id="input-load" type="submit" value="Load Match" @click.prevent="loadMatch()" :disabled="isLoaded">
 						<input id="input-unload" type="submit" value="Unload Match" @click.prevent="unloadMatch()" :disabled="!isLoaded">
-
-						<div style="color:red; margin-top:35px;"><span v-if="!chatLogsInput || !matchInfoInput">Enter Match info and Chat logs!</span></div>
+					
+						<div style="color:red; margin-top:35px;">
+							<span v-if="!chatLogsInput || !matchInfoInput">Enter Match info and Chat logs!</span>
+						</div>
 					</form>
 				</div>
 
@@ -32,8 +34,8 @@
 							<label for="view-general">General Options</label>
 						</div>
 						<div>
-							<input type="radio" id="view-players" value="playerFilter" name="viewSelect" v-model="view" :disabled="!isLoaded">
-							<label for="view-players">Player filter</label>
+							<input type="radio" id="view-players" value="playerOptions" name="viewSelect" v-model="view" :disabled="!isLoaded">
+							<label for="view-players">Player Options</label>
 						</div>
 
 						<div id="general-config" v-show="view === 'generalConfig'">
@@ -71,22 +73,24 @@
 							<input id="seperators-toggle" type="checkbox" v-model.trim="seperatorsToggle" :disabled="!isLoaded">
 						</div>
 
-						<div id="player-filter" v-show="view === 'playerFilter'">
-							<form method="post">
-								<div v-for="player in parsedMatchInfo">
-									<input
-										type="checkbox"
-										:id="`${player.IGN}-selector`"
-										:value="`${player.IGN} [${parsedMatchInfo.findIndex(p => p.IGN === player.IGN) + 1}]`"
-										v-model="selectedPlayers"
-										@click="filter"
-										:disabled="!isLoaded"
-									>
-									<label :for="`${player.IGN}-selector`">
-										{{ player.IGN }} [{{ parsedMatchInfo.findIndex(p => p.IGN === player.IGN) + 1 }}]
-									</label>
-								</div>
-							</form>
+						<div id="player-options" v-show="view === 'playerOptions'">
+							<span id="highlight-span">H</span>
+							<span id="filter-span">F</span>
+							<button id="reset-player-options" @click.prevent="highlightedPlayers = []; filteredPlayers = []; filter()">Clear selection</button>
+							<div id="player-options-container">
+								<form method="post">
+									<div v-for="player in parsedMatchInfo">
+										<input type="checkbox" :id="`${player.IGN}-highlight`" :value="`${player.IGN} [${parsedMatchInfo.findIndex(p => p.IGN === player.IGN) + 1}]`"
+										 v-model="highlightedPlayers" :disabled="!isLoaded">
+										<input type="checkbox" :id="`${player.IGN}-filter`" :value="`${player.IGN} [${parsedMatchInfo.findIndex(p => p.IGN === player.IGN) + 1}]`"
+										 v-model="filteredPlayers" @click="filter" :disabled="!isLoaded">
+										<label :for="`${player.IGN}-filter`">
+											<span class="player-filter-ign">{{ player.IGN }}</span>
+											<span class="player-filter-num">[{{ parsedMatchInfo.findIndex(p => p.IGN === player.IGN) + 1 }}]</span>
+										</label>
+									</div>
+								</form>
+							</div>
 						</div>
 					</form>
 				</div>
@@ -108,7 +112,7 @@
 				</div>
 
 				<div id="chat-log-wrapper">
-					<p v-for="log in parsedChatLogs" :class="[checkType(log), seperatorCheck(log)]"> {{ log }}</p>
+					<p v-for="log in parsedChatLogs" :class="[checkType(log), extraStylingCheck(log)]"> {{ log }}</p>
 				</div>
 			</div>
 		</div>
