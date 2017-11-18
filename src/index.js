@@ -45,6 +45,8 @@ const app = new Vue({
 
 		extraStylingCheck(log) {
 			const classes = [];
+			const logIndex = `logLine${this.parsedChatLogs.indexOf(log)}`;
+
 			if (this.seperatorsToggle) {
 				classes.push('seperator');
 				if (['announcement', 'privateannouncement'].includes(this.checkType(log))) classes.push('seperator-thick');
@@ -52,7 +54,8 @@ const app = new Vue({
 			}
 			if (this.highlightedPlayers.length && this.highlightedPlayers.some(player => log.includes(player))) classes.push('highlight-player');
 			if (this.searchInput && log.includes(this.searchInput.toLowerCase())) {
-				this.searchHits.push(`logLine${this.parsedChatLogs.indexOf(log)}`); // for anchor navigation
+				// if (this.searchHits.length) this.searchHits = []; // clear before pushing new hits to it
+				if (!this.searchHits.includes(logIndex)) this.searchHits.push(logIndex); // for anchor navigation
 				classes.push('highlight-search');
 			}
 
