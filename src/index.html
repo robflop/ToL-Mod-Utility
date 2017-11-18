@@ -98,7 +98,7 @@
 						</div>
 						
 						<div id="text-search" v-show="view === 'textSearch'">
-							<form id="search-options" method="post">
+							<form id="search-options" method="post" @submit.prevent>
 								<label for="search-term">Search term/phrase: </label>
 								<input id="search-term" type="search" v-model="searchInput" :disabled="!isLoaded">
 							</form>
