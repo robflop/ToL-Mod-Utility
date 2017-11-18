@@ -11,9 +11,11 @@ const app = new Vue({
 		selectedType: 'All',
 		selectedDay: 'All',
 		selectedNight: 'All',
-		seperatorsToggle: false,
 		filteredPlayers: [],
 		highlightedPlayers: [],
+		searchInput: '',
+		searchHits: [],
+		seperatorsToggle: false,
 		dayNightConflict: false,
 		days: 0,
 		nights: 0
@@ -48,7 +50,11 @@ const app = new Vue({
 				if (['announcement', 'privateannouncement'].includes(this.checkType(log))) classes.push('seperator-thick');
 				else classes.push('seperator-thin');
 			}
-			if (this.highlightedPlayers.length && this.highlightedPlayers.some(player => log.includes(player))) classes.push('highlight');
+			if (this.highlightedPlayers.length && this.highlightedPlayers.some(player => log.includes(player))) classes.push('highlight-player');
+			if (this.searchInput && log.includes(this.searchInput.toLowerCase())) {
+				this.searchHits.push(`logLine${this.parsedChatLogs.indexOf(log)}`); // for anchor navigation
+				classes.push('highlight-search');
+			}
 
 			return classes;
 		},

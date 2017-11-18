@@ -89,7 +89,11 @@ ol > li, #player-options {
 	margin-top: 10px;
 }
 
-#highlight-span {
+#search-options {
+	margin-top: 10px;
+}
+
+#highlight-player-span {
 	padding-left: 1px;
 	vertical-align: sub;
 }
@@ -133,7 +137,11 @@ ol > li, #player-options {
 	border-width: 2px;
 }
 
-.highlight {
+.highlight-player {
+	background-color: #474700;
+}
+
+.highlight-search {
 	background-color: #474700;
 }
 
