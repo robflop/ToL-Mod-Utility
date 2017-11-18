@@ -15,6 +15,7 @@ const app = new Vue({
 		highlightedPlayers: [],
 		searchInput: '',
 		searchHits: [],
+		currentHit: 1,
 		seperatorsToggle: false,
 		dayNightConflict: false,
 		days: 0,
@@ -45,7 +46,7 @@ const app = new Vue({
 
 		extraStylingCheck(log) {
 			const classes = [];
-			const logIndex = `logLine${this.parsedChatLogs.indexOf(log)}`;
+			const logLine = `logLine${this.parsedChatLogs.indexOf(log)}`;
 
 			if (this.seperatorsToggle) {
 				classes.push('seperator');
@@ -54,8 +55,7 @@ const app = new Vue({
 			}
 			if (this.highlightedPlayers.length && this.highlightedPlayers.some(player => log.includes(player))) classes.push('highlight-player');
 			if (this.searchInput && log.includes(this.searchInput.toLowerCase())) {
-				// if (this.searchHits.length) this.searchHits = []; // clear before pushing new hits to it
-				if (!this.searchHits.includes(logIndex)) this.searchHits.push(logIndex); // for anchor navigation
+				if (!this.searchHits.includes(logLine)) this.searchHits.push(logLine); // for anchor navigation
 				classes.push('highlight-search');
 			}
 
@@ -93,6 +93,22 @@ const app = new Vue({
 
 			if (/^From ([\w\s]+) \[\d+\]/.test(log)) return 'whisper';
 			else return logType;
+		},
+
+		adjustView(forward) {
+			if (forward && this.currentHit + 1 <= this.searchHits.length) ++this.currentHit;
+			else if (!forward && this.currentHit - 1 >= 1) --this.currentHit;
+			else return;
+
+			console.log(`old: ${window.location.href}`);
+			if (window.location.href.includes('logLine')) {
+				window.location.href = `${window.location.href.replace(/#logLine\d+/, `#logLine${this.searchHits[this.currentHit - 1]}`)}`;
+			}
+			else {
+				window.location.href = `${window.location.href}#logLine${this.searchHits[this.currentHit - 1]}`;
+			}
+			// substracting 1 from the selection cuz of zero-bas'ing on array indexes, first hit would be the second in the searchHits list otherwise
+			console.log(`new: ${window.location.href}`);
 		},
 
 		filter() {
@@ -172,6 +188,7 @@ const app = new Vue({
 			this.seperatorsToggle = false;
 			this.filteredPlayers = this.highlightedPlayers = [];
 			this.selectedType = this.selectedDay = this.selectedNight = 'All';
+			this.searchInput = ''; this.searchHits = [];
 		}
 	}
 });
