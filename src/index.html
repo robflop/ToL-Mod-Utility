@@ -4,7 +4,7 @@
 		<meta charset="UTF-8">
 		<title>ToL Mod Utility</title>
 		<link rel="stylesheet" href="./index.css">
-		<script src="https://unpkg.com/vue@2.4.2/dist/vue.min.js"></script>
+		<script src="https://unpkg.com/vue@2.4.2/dist/vue.js"></script>
 	</head>
 
 	<body>
@@ -13,10 +13,10 @@
 				<div id="input-wrapper">
 					<form id="input" method="post">
 						<label for="match-info">Match Info: </label>
-						<input id="match-info" type="text" v-model.trim="matchInfoInput">
+						<input id="match-info" type="text" v-model.trim="matchInfoInput" :disabled="isLoaded">
 					
 						<label for="chat-logs">Chat logs: </label>
-						<input id="chat-logs" type="text" v-model.trim="chatLogsInput">
+						<input id="chat-logs" type="text" v-model.trim="chatLogsInput" :disabled="isLoaded">
 					
 						<input id="input-load" type="submit" value="Load Match" @click.prevent="loadMatch()" :disabled="isLoaded">
 						<input id="input-unload" type="submit" value="Unload Match" @click.prevent="unloadMatch()" :disabled="!isLoaded">
@@ -36,6 +36,10 @@
 						<div>
 							<input type="radio" id="view-players" value="playerOptions" name="viewSelect" v-model="view" :disabled="!isLoaded">
 							<label for="view-players">Player Options</label>
+						</div>
+						<div>
+							<input type="radio" id="view-search" value="textSearch" name="viewSelect" v-model="view" :disabled="!isLoaded">
+							<label for="view-search">Text search</label>
 						</div>
 
 						<div id="general-config" v-show="view === 'generalConfig'">
@@ -68,13 +72,13 @@
 								<option selected>All</option>
 								<option v-for="night in nights">Night {{ night }}</option>
 							</select>
-						
+
 							<label for="seperators-toggle">Line seperators: </label>
 							<input id="seperators-toggle" type="checkbox" v-model.trim="seperatorsToggle" :disabled="!isLoaded">
 						</div>
 
 						<div id="player-options" v-show="view === 'playerOptions'">
-							<span id="highlight-span">H</span>
+							<span id="highlight-player-span">H</span>
 							<span id="filter-span">F</span>
 							<button id="reset-player-options" @click.prevent="highlightedPlayers = []; filteredPlayers = []; filter()">Clear selection</button>
 							<div id="player-options-container">
@@ -91,6 +95,13 @@
 									</div>
 								</form>
 							</div>
+						</div>
+						
+						<div id="text-search" v-show="view === 'textSearch'">
+							<form id="search-options" method="post">
+								<label for="search-term">Search term/phrase: </label>
+								<input id="search-term" type="search" v-model="searchInput" :disabled="!isLoaded">
+							</form>
 						</div>
 					</form>
 				</div>
@@ -112,7 +123,7 @@
 				</div>
 
 				<div id="chat-log-wrapper">
-					<p v-for="log in parsedChatLogs" :class="[checkType(log), extraStylingCheck(log)]"> {{ log }}</p>
+					<p v-for="log in parsedChatLogs" :id="`logLine${parsedChatLogs.indexOf(log)+1}`" :class="[checkType(log), extraStylingCheck(log)]"> {{ log }}</p>
 				</div>
 			</div>
 		</div>
