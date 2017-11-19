@@ -58,7 +58,6 @@ const app = new Vue({
 				else classes.push('seperator-thin');
 			}
 			if (this.highlightedPlayers.length && this.highlightedPlayers.some(player => log.includes(player))) classes.push('highlight-player');
-			// if (log.toLowerCase().includes('hellsing')) console.log(log.toLowerCase().includes(this.searchInput.toLowerCase()));
 
 			if (this.searchInput) {
 				if (!this.regexSearchToggle && !this.entireWordsSearchToggle) {
