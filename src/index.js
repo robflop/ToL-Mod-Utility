@@ -16,7 +16,10 @@ const app = new Vue({
 		searchInput: '',
 		searchHits: [],
 		currentHit: 1,
+		jumpToHit: 1,
 		seperatorsToggle: false,
+		regexSearchToggle: false,
+		entireWordsSearchToggle: false,
 		dayNightConflict: false,
 		days: 0,
 		nights: 0
@@ -47,6 +50,7 @@ const app = new Vue({
 		extraStylingCheck(log) {
 			const classes = [];
 			const logLine = `logLine${this.parsedChatLogs.indexOf(log)}`;
+			let searchHit = false;
 
 			if (this.seperatorsToggle) {
 				classes.push('seperator');
@@ -54,9 +58,23 @@ const app = new Vue({
 				else classes.push('seperator-thin');
 			}
 			if (this.highlightedPlayers.length && this.highlightedPlayers.some(player => log.includes(player))) classes.push('highlight-player');
-			if (this.searchInput && log.includes(this.searchInput.toLowerCase())) {
-				if (!this.searchHits.includes(logLine)) this.searchHits.push(logLine); // for anchor navigation
-				classes.push('highlight-search');
+			// if (log.toLowerCase().includes('hellsing')) console.log(log.toLowerCase().includes(this.searchInput.toLowerCase()));
+
+			if (this.searchInput) {
+				if (!this.regexSearchToggle && !this.entireWordsSearchToggle) {
+					if (log.toLowerCase().includes(this.searchInput.toLowerCase())) searchHit = true;
+				}
+				else if (this.regexSearchToggle) {
+					if (log.match(this.searchInput)) searchHit = true;
+				}
+				else if (this.entireWordsSearchToggle) {
+					if (this.searchInput.split(' ').every(searchWord => log.split(' ').includes(searchWord))) searchHit = true;
+				}
+
+				if (searchHit) {
+					if (!this.searchHits.includes(logLine)) this.searchHits.push(logLine); // for anchor navigation
+					classes.push('highlight-search');
+				}
 			}
 
 			return classes;
@@ -95,20 +113,25 @@ const app = new Vue({
 			else return logType;
 		},
 
-		adjustView(forward) {
-			if (forward && this.currentHit + 1 <= this.searchHits.length) ++this.currentHit;
-			else if (!forward && this.currentHit - 1 >= 1) --this.currentHit;
-			else return;
+		adjustView(forward, jumpTo) {
+			// parse int because number input turns out as string
+			if (forward) {
+				if (parseInt(this.currentHit) + 1 > this.searchHits.length) this.currentHit = 1;
+				else ++this.currentHit;
+			}
+			else if (!forward && forward !== null) { // not-null check for jumps
+				if (parseInt(this.currentHit) - 1 < 1) this.currentHit = this.searchHits.length;
+				else --this.currentHit;
+			}
+			else if (!jumpTo && !this.searchHits.length) return; // eslint-disable-line curly
 
-			console.log(`old: ${window.location.href}`);
+			if (jumpTo && jumpTo <= this.searchHits.length) this.currentHit = jumpTo;
+
 			if (window.location.href.includes('logLine')) {
-				window.location.href = `${window.location.href.replace(/#logLine\d+/, `#logLine${this.searchHits[this.currentHit - 1]}`)}`;
+				window.location.href = window.location.href.replace(/#logLine\d+/, `#${this.searchHits[this.currentHit - 1]}`);
 			}
-			else {
-				window.location.href = `${window.location.href}#logLine${this.searchHits[this.currentHit - 1]}`;
-			}
-			// substracting 1 from the selection cuz of zero-bas'ing on array indexes, first hit would be the second in the searchHits list otherwise
-			console.log(`new: ${window.location.href}`);
+			else window.location.href += `#${this.searchHits[this.currentHit - 1]}`; // eslint-disable-line curly
+			// substracting 1 from the selection cuz of zero-basing on array indexes, first hit would be the second in the searchHits list otherwise
 		},
 
 		filter() {
@@ -185,10 +208,11 @@ const app = new Vue({
 
 		clearFilter() {
 			this.view = 'generalConfig';
-			this.seperatorsToggle = false;
-			this.filteredPlayers = this.highlightedPlayers = [];
+			this.seperatorsToggle = this.regexSearchToggle = this.entireWordsSearchToggle = false;
+			this.filteredPlayers = this.highlightedPlayers = this.searchHits = [];
 			this.selectedType = this.selectedDay = this.selectedNight = 'All';
-			this.searchInput = ''; this.searchHits = [];
+			this.searchInput = '';
+			this.currentHit = this.jumpToHit = 1;
 		}
 	}
 });
