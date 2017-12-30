@@ -6,10 +6,10 @@
   "main": "./src/client",
   "dependencies": {},
   "devDependencies": {
-    "electron": "^1.7.8",
-    "electron-packager": "^9.1.0",
+    "electron": "^1.7.10",
+    "electron-packager": "^10.1.0",
     "electron-winstaller": "^2.6.3",
-    "eslint": "^4.8.0",
+    "eslint": "^4.14.0",
     "eslint-plugin-vue": "^3.14.0",
     "htmlhint": "^0.9.13",
     "vue-devtools": "^3.1.9"
