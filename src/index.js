@@ -7,6 +7,8 @@ const app = new Vue({
 		savedChatLogs: '',
 		parsedMatchInfo: '',
 		parsedChatLogs: '',
+		days: 0,
+		nights: 0,
 		view: 'generalConfig',
 		selectedType: 'All',
 		selectedDay: 'All',
@@ -21,8 +23,7 @@ const app = new Vue({
 		regexSearchToggle: false,
 		entireWordsSearchToggle: false,
 		dayNightConflict: false,
-		days: 0,
-		nights: 0
+		connectionStatuses: ['100% Connected', 'Left While Alive', 'Left While Dead']
 	},
 	methods: {
 		loadMatch() {
@@ -30,8 +31,10 @@ const app = new Vue({
 
 			this.parsedMatchInfo = JSON.parse(this.matchInfoInput.replace(/[“”'`]/g, '"'));
 			// match info from forums has weird quotes, thus replacing them cause they error otherwise
+			this.parsedMatchInfo.map(player => player.playerConnection = this.connectionStatuses[player.playerConnection]);
+			// replace integer representation with actual text representation
 			this.parsedChatLogs = this.chatLogsInput.split('[,]').filter(line => line).map(line => line.trim());
-			// character sequence is the line seperator in raw report logs
+			// this character sequence is the line seperator in raw report logs
 			this.savedChatLogs = this.parsedChatLogs;
 			this.days = this.savedChatLogs.filter(line => /\(Day\) Day \d+/.test(line)).length;
 			this.nights = this.savedChatLogs.filter(line => /\(Day\) Night \d+/.test(line)).length;
@@ -87,12 +90,17 @@ const app = new Vue({
 
 			factions.some(fact => { // eslint-disable-line array-callback-return
 				if (playerFaction.replace(/\s+/g, '-').toLowerCase() === fact) return faction = fact;
-				// replace spaces with dashes because can't have spaces in css class names
+				// replace spaces with dashes because you can't have spaces in css class names
 			});
 
 			if (playerFaction === 'BlueDragon') return 'blue-dragon';
 			// bd isn't seperated by a space, so matching and replacing that to be compliant with css names would be messy
 			else return faction;
+		},
+
+		checkConnection(playerConnection) {
+			const cssClasses = ['dnl', 'lwa', 'lwd'];
+			return cssClasses[this.connectionStatuses.indexOf(playerConnection)];
 		},
 
 		checkType(log) {

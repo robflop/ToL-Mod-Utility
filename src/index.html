@@ -121,13 +121,13 @@
 				<div id="match-info-wrapper">
 					<ol> 
 						<li v-for="player in parsedMatchInfo">
-							<span class="playerName">{{ player.IGN }} ({{ player.displayName }})</span>
-							:
+							<span class="playerName">{{ player.IGN }} ({{ player.displayName }}, {{ player.playerId }}):</span>
 							<span class="playerStart" :class="checkFaction(player.startFaction)">{{ player.startClass }} ({{ player.startFaction }})</span>
-							→
+							<span>→</span> <!-- lone arrow in span because i don't want it colored, and putting it without a span would look weird in syntax -->
 							<span class="playerEnd" :class="checkFaction(player.finalFaction)">{{ player.finalClass }} ({{ player.finalFaction }}).</span>
+							<br>
 							<span class="playerResult" :class="player.won ? 'won' : 'lost'">Won? {{ player.won }}.</span>
-							<span class="playerId">({{ player.playerId }})</span>
+							<span class="playerConnection" :class="checkConnection(player.playerConnection)">Connection Status: {{ player.playerConnection }}.</span>
 						</li>
 					</ol>
 				</div>
