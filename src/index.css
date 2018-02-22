@@ -219,6 +219,18 @@ ol > li, #player-options {
 	color: #00B2FF;
 }
 
+.dnl {
+	color: #C1D18A;
+}
+
+.lwa {
+	color: #F04639;
+}
+
+.lwd {
+	color: #ACBEC2;
+}
+
 @media screen and (max-width: 1410px) {
 	.player-filter-ign {
 		max-width: 8vw;
