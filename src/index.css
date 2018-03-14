@@ -60,6 +60,15 @@ ol > li, #player-options {
 	text-align: center;
 }
 
+#wipe-toggle {
+	display: inline-block;
+	vertical-align: bottom;
+}
+
+label[for="wipe-toggle"] {
+	display: inline-block;
+}
+
 #display-wrapper {
 	grid-area: display-area;
 }

@@ -21,12 +21,15 @@
 						<input id="input-load" type="submit" value="Load Match" @click.prevent="loadMatch()" :disabled="isLoaded">
 						<input id="input-unload" type="submit" value="Unload Match" @click.prevent="unloadMatch()" :disabled="!isLoaded">
 					
+						<label for="wipe-toggle">Wipe Input on Unload?</label>
+						<input id="wipe-toggle" type="checkbox" v-model.trim="unloadWipeToggle">
+						
 						<div style="color:red; margin-top:35px;">
 							<span v-if="!chatLogsInput || !matchInfoInput">Enter Match info and Chat logs!</span>
 						</div>
 					</form>
 				</div>
-
+			
 				<div id="config-wrapper">
 					<form id="config" method="post">
 						<div>
@@ -41,7 +44,7 @@
 							<input type="radio" id="view-search" value="textSearch" name="viewSelect" v-model="view" :disabled="!isLoaded">
 							<label for="view-search">Text search</label>
 						</div>
-
+					
 						<div id="general-config" v-show="view === 'generalConfig'">
 							<label for="type-select">Type filter: </label>
 							<select id="type-select" v-model="selectedType" @change="filter" :disabled="!isLoaded">
@@ -72,11 +75,11 @@
 								<option selected>All</option>
 								<option v-for="night in nights">Night {{ night }}</option>
 							</select>
-
+						
 							<label for="seperators-toggle">Line seperators: </label>
 							<input id="seperators-toggle" type="checkbox" v-model.trim="seperatorsToggle" :disabled="!isLoaded">
 						</div>
-
+					
 						<div id="player-options" v-show="view === 'playerOptions'">
 							<span id="highlight-player-span">H</span>
 							<span id="filter-span">F</span>
@@ -96,7 +99,7 @@
 								</form>
 							</div>
 						</div>
-						
+					
 						<div id="text-search" v-show="view === 'textSearch'">
 							<form id="search-options" method="post" @submit.prevent>
 								<label for="search-term">Search term/phrase: </label>
@@ -116,7 +119,7 @@
 					</form>
 				</div>
 			</div>
-
+		
 			<div id="display-wrapper">
 				<div id="match-info-wrapper">
 					<ol> 
@@ -131,13 +134,13 @@
 						</li>
 					</ol>
 				</div>
-
+			
 				<div id="chat-log-wrapper">
 					<p v-for="log in parsedChatLogs" :id="`logLine${parsedChatLogs.indexOf(log)+1}`" :class="[checkType(log), extraStylingCheck(log)]"> {{ log }}</p>
 				</div>
 			</div>
 		</div>
-
+	
 		<script src="index.js"></script>
 	</body>
 </html>

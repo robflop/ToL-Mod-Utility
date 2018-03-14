@@ -19,6 +19,7 @@ const app = new Vue({
 		searchHits: [],
 		currentHit: 1,
 		jumpToHit: 1,
+		unloadWipeToggle: true,
 		seperatorsToggle: false,
 		regexSearchToggle: false,
 		entireWordsSearchToggle: false,
@@ -43,7 +44,8 @@ const app = new Vue({
 		},
 
 		unloadMatch() {
-			this.chatLogsInput = this.matchInfoInput = this.parsedMatchInfo = this.parsedChatLogs = this.savedChatLogs = '';
+			if (this.unloadWipeToggle) this.chatLogsInput = this.matchInfoInput = '';
+			this.parsedMatchInfo = this.parsedChatLogs = this.savedChatLogs = '';
 			this.days = this.nights = 0;
 			this.clearFilter();
 
