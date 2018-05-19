@@ -95,9 +95,9 @@ const app = new Vue({
 				// replace spaces with dashes because you can't have spaces in css class names
 			});
 
-			if (playerFaction === 'BlueDragon') return 'blue-dragon';
+			if (playerFaction === 'BlueDragon') return faction = 'blue-dragon';
 			// bd isn't seperated by a space, so matching and replacing that to be compliant with css names would be messy
-			else return faction;
+			return faction;
 		},
 
 		checkConnection(playerConnection) {

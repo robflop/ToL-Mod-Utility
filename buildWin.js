@@ -4,12 +4,12 @@ console.log('Now building... (This might take a while)');
 
 const buildOptions = {
 	dir: './',
-	appCopyright: 'Copyright (C) 2017 robflop',
+	appCopyright: 'Copyright (C) 2018 robflop',
 	platform: 'win32',
 	arch: process.argv[2] || 'ia32',
 	asar: true,
 	icon: './src/icon.ico',
-	ignore: /(buildWin|makeInstallers|abc|vscode|eslintrc|gitattributes|gitignore|htmlhintrc|travis)/,
+	ignore: /(buildWin|makeInstallers|vscode|eslintrc|gitattributes|gitignore|htmlhintrc|travis)/,
 	out: 'dist/',
 	overwrite: true,
 	prune: true,
