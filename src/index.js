@@ -24,7 +24,7 @@ const app = new Vue({
 		regexSearchToggle: false,
 		entireWordsSearchToggle: false,
 		dayNightConflict: false,
-		connectionStatuses: ['100% Connected', 'Left While Alive', 'Left While Dead']
+		connectionStatuses: ['Connected', 'Left Alive', 'Left Dead', 'Left Won Early', 'Reconnected']
 	},
 	methods: {
 		loadMatch() {
@@ -32,8 +32,8 @@ const app = new Vue({
 
 			this.parsedMatchInfo = JSON.parse(this.matchInfoInput.replace(/[“”'`]/g, '"'));
 			// match info from forums has weird quotes, thus replacing them cause they error otherwise
-			this.parsedMatchInfo.map(player => player.playerConnection = this.connectionStatuses[player.playerConnection]);
-			// replace integer representation with actual text representation
+			this.parsedMatchInfo.map(player => player.leftGameReason === 'Reconnected' ? player.pConInt = 4 : null);
+			// adjust connection status messages for reconnections
 			this.parsedChatLogs = this.chatLogsInput.split('[,]').filter(line => line).map(line => line.trim());
 			// this character sequence is the line seperator in raw report logs
 			this.savedChatLogs = this.parsedChatLogs;
@@ -101,8 +101,7 @@ const app = new Vue({
 		},
 
 		checkConnection(playerConnection) {
-			const cssClasses = ['dnl', 'lwa', 'lwd'];
-			return cssClasses[this.connectionStatuses.indexOf(playerConnection)];
+			return this.connectionStatuses[playerConnection].replace(/\s+/g, '-').toLowerCase();
 		},
 
 		checkType(log) {

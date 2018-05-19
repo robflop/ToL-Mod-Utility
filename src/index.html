@@ -130,7 +130,7 @@
 							<span class="playerEnd" :class="checkFaction(player.finalFaction)">{{ player.finalClass }} ({{ player.finalFaction }}).</span>
 							<br>
 							<span class="playerResult" :class="player.won ? 'won' : 'lost'">Won? {{ player.won }}.</span>
-							<span class="playerConnection" :class="checkConnection(player.playerConnection)">Connection Status: {{ player.playerConnection }}.</span>
+							<span class="playerConnection" :class="checkConnection(player.pConInt)">Connection Status: {{ connectionStatuses[player.pConInt] }}.</span>
 						</li>
 					</ol>
 				</div>

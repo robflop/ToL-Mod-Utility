@@ -228,16 +228,24 @@ label[for="wipe-toggle"] {
 	color: #00B2FF;
 }
 
-.dnl {
+.connected {
 	color: #C1D18A;
 }
 
-.lwa {
-	color: #F04639;
+.reconnected {
+	color: #8d9965;
 }
 
-.lwd {
+.left-won-early {
+	color: #87b6c0
+}
+
+.left-dead {
 	color: #ACBEC2;
+}
+
+.left-alive {
+	color: #F04639;
 }
 
 @media screen and (max-width: 1410px) {
