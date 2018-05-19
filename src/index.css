@@ -45,7 +45,7 @@ ol > li, #player-options {
 	grid-template-columns: 100%;
 	grid-template-rows: 50% 50%;
 	grid-template-areas: "top"
-						 "bottom";
+						"bottom";
 	margin: 10px;
 	height: calc(100vh - 26px);
 	border: solid;

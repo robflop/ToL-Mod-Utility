@@ -87,13 +87,13 @@
 							<div id="player-options-container">
 								<form method="post">
 									<div v-for="player in parsedMatchInfo">
-										<input type="checkbox" :id="`${player.IGN}-highlight`" :value="`${player.IGN} [${parsedMatchInfo.findIndex(p => p.IGN === player.IGN) + 1}]`"
-										 v-model="highlightedPlayers" :disabled="!isLoaded">
-										<input type="checkbox" :id="`${player.IGN}-filter`" :value="`${player.IGN} [${parsedMatchInfo.findIndex(p => p.IGN === player.IGN) + 1}]`"
-										 v-model="filteredPlayers" @click="filter" :disabled="!isLoaded">
-										<label :for="`${player.IGN}-filter`">
-											<span class="player-filter-ign">{{ player.IGN }}</span>
-											<span class="player-filter-num">[{{ parsedMatchInfo.findIndex(p => p.IGN === player.IGN) + 1 }}]</span>
+										<input type="checkbox" :id="`${player.ign}-highlight`" :value="`${player.ign} [${parsedMatchInfo.findIndex(p => p.ign === player.ign) + 1}]`"
+										v-model="highlightedPlayers" :disabled="!isLoaded">
+										<input type="checkbox" :id="`${player.ign}-filter`" :value="`${player.ign} [${parsedMatchInfo.findIndex(p => p.ign === player.ign) + 1}]`"
+										v-model="filteredPlayers" @click="filter" :disabled="!isLoaded">
+										<label :for="`${player.ign}-filter`">
+											<span class="player-filter-ign">{{ player.ign }}</span>
+											<span class="player-filter-num">[{{ parsedMatchInfo.findIndex(p => p.ign === player.ign) + 1 }}]</span>
 										</label>
 									</div>
 								</form>
@@ -124,10 +124,10 @@
 				<div id="match-info-wrapper">
 					<ol> 
 						<li v-for="player in parsedMatchInfo">
-							<span class="playerName">{{ player.IGN }} ({{ player.displayName }}, {{ player.playerId }}):</span>
+							<span class="playerName">{{ player.ign }} ({{ player.dName }}, {{ player.pid }}):</span>
 							<span class="playerStart" :class="checkFaction(player.startFaction)">{{ player.startClass }} ({{ player.startFaction }})</span>
 							<span>→</span> <!-- lone arrow in span because i don't want it colored, and putting it without a span would look weird in syntax -->
-							<span class="playerEnd" :class="checkFaction(player.finalFaction)">{{ player.finalClass }} ({{ player.finalFaction }}).</span>
+							<span class="playerEnd" :class="checkFaction(player.endFaction)">{{ player.endClass }} ({{ player.endFaction }}).</span>
 							<br>
 							<span class="playerResult" :class="player.won ? 'won' : 'lost'">Won? {{ player.won }}.</span>
 							<span class="playerConnection" :class="checkConnection(player.pConInt)">Connection Status: {{ connectionStatuses[player.pConInt] }}.</span>
