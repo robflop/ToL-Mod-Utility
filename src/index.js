@@ -56,7 +56,7 @@ const app = new Vue({
 
 		extraStylingCheck(log) {
 			const classes = [];
-			const logLine = `logLine${this.parsedChatLogs.indexOf(log)}`;
+			const logLine = `log-line-${this.parsedChatLogs.indexOf(log)}`;
 			let searchHit = false;
 
 			if (this.seperatorsToggle) {
