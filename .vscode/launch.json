@@ -6,8 +6,6 @@
 	"configurations": [
 		{
 			"name": "Electron: Main process",
-			"type": "node",
-			"request": "launch",
 			"protocol": "inspector",
 			"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
 			"runtimeArgs": [
@@ -17,20 +15,12 @@
 			"windows": {
 				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
 			},
-			// "program": "${workspaceRoot}/src/client"
 		},
     	{
 			"name": "Electron: Renderer process",
-			"type": "chrome",
-			"request": "attach",
 			"port": 9223,
 			"webRoot": "${workspaceFolder}",
 			"timeout": 30000,
-			// "runtimeExecutable": "${workspaceRoot}/node_modules/electron/dist/Electron.exe",
-			// "runtimeArgs": [
-			// 	"${workspaceRoot}/src/client",
-			// 	"--remote-debugging-port=9222"
-			// ],
     	}
 	],
 	"compounds": [

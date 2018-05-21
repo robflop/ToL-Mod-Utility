@@ -32,8 +32,10 @@ const app = new Vue({
 
 			this.parsedMatchInfo = JSON.parse(this.matchInfoInput.replace(/[“”'`]/g, '"'));
 			// match info from forums has weird quotes, thus replacing them cause they error otherwise
-			this.parsedMatchInfo.map(player => player.leftGameReason === 'Reconnected' ? player.pConInt = 4 : null);
-			// adjust connection status messages for reconnections
+			this.parsedMatchInfo
+				.sort((a, b) => a.piIndex - b.piIndex)
+				.map(player => player.leftGameReason === 'Reconnected' ? player.pConInt = 4 : null);
+			// sort by piIndex and adjust connection status for reconnection
 			this.parsedChatLogs = this.chatLogsInput.split('[,]').filter(line => line).map(line => line.trim());
 			// this character sequence is the line seperator in raw report logs
 			this.savedChatLogs = this.parsedChatLogs;
