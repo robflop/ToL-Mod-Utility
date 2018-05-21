@@ -131,6 +131,7 @@
 							<br>
 							<span class="playerResult" :class="player.won ? 'won' : 'lost'">Won? {{ player.won }}.</span>
 							<span class="playerConnection" :class="checkConnection(player.pConInt)">Connection Status: {{ connectionStatuses[player.pConInt] }}.</span>
+							<span class="selectedJournalInfo" v-show="selectedPlayerJournal === player.pid">Player Journal currently displayed on the right.</span>
 						</li>
 					</ol>
 				</div>

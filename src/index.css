@@ -73,6 +73,10 @@ label[for="wipe-toggle"] {
 	grid-area: matchinfo-logs;
 }
 
+.selectedJournalInfo {
+	color: #c52626;
+}
+
 #input-wrapper, #match-info-wrapper {
 	grid-area: top;
 	border-bottom: solid;
