@@ -34,13 +34,13 @@ ol > li, #player-options {
 #app {
 	height: 100vh;
 	display: grid;
-	grid-template-columns: 20% 80%;
-	grid-template-areas: "input-config display-area";
+	grid-template-columns: 16% 56% 28%;
+	grid-template-areas: "input-config matchinfo-logs player-journals";
 	background-color: #222;
 	color: #ddd;
 }
 
-#input-config-wrapper, #display-wrapper {
+#input-config-wrapper, #matchinfo-logs-wrapper, #player-journals-wrapper {
 	display: grid;
 	grid-template-columns: 100%;
 	grid-template-rows: 50% 50%;
@@ -69,8 +69,8 @@ label[for="wipe-toggle"] {
 	display: inline-block;
 }
 
-#display-wrapper {
-	grid-area: display-area;
+#matchinfo-logs-wrapper {
+	grid-area: matchinfo-logs;
 }
 
 #input-wrapper, #match-info-wrapper {
@@ -87,6 +87,10 @@ label[for="wipe-toggle"] {
 
 #chat-log-wrapper {
 	margin-left: 10px;
+}
+
+#chat-log-wrapper > p {
+	margin: 10px 5px;
 }
 
 #player-options {
@@ -116,6 +120,27 @@ label[for="wipe-toggle"] {
 	float: right;
 	margin-right: 10px;
 	margin-top: 2px;
+}
+
+#player-journals-wrapper {
+	grid-area: player-journals;
+}
+
+#left-side-journal {
+	grid-area: top;
+	border-bottom: solid;
+}
+
+#right-side-journal {
+	grid-area: bottom;
+}
+
+#left-side-journal, #right-side-journal {
+	overflow-y: auto;
+}
+
+#left-side-journal > div > p, #right-side-journal > div > p {
+	margin: 10px;
 }
 
 .player-filter-ign {
