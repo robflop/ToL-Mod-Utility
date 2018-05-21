@@ -34,7 +34,7 @@ ol > li, #player-options {
 #app {
 	height: 100vh;
 	display: grid;
-	grid-template-columns: 16% 56% 28%;
+	grid-template-columns: 20% 55% 25%;
 	grid-template-areas: "input-config matchinfo-logs player-journals";
 	background-color: #222;
 	color: #ddd;
@@ -148,7 +148,6 @@ label[for="wipe-toggle"] {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	display: inline-block;
-	/* max-width: 8vw; */
 	line-height: 12px;
 }
 
