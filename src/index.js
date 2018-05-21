@@ -4,15 +4,16 @@ const app = new Vue({
 		isLoaded: false,
 		matchInfoInput: '',
 		chatLogsInput: '',
-		savedChatLogs: '',
-		parsedMatchInfo: '',
-		parsedChatLogs: '',
+		savedChatLogs: [],
+		parsedMatchInfo: [],
+		parsedChatLogs: [],
 		days: 0,
 		nights: 0,
 		view: 'generalConfig',
 		selectedType: 'All',
 		selectedDay: 'All',
 		selectedNight: 'All',
+		selectedPlayerJournal: '',
 		filteredPlayers: [],
 		highlightedPlayers: [],
 		searchInput: '',
@@ -36,6 +37,11 @@ const app = new Vue({
 				.sort((a, b) => a.piIndex - b.piIndex)
 				.map(player => player.leftGameReason === 'Reconnected' ? player.pConInt = 4 : null);
 			// sort by piIndex and adjust connection status for reconnection
+			this.parsedMatchInfo.map(player => { // eslint-disable-line array-callback-return
+				player.lastJournalLeft = player.lastJournalLeft.split('\n').filter(line => line).map(line => line.trim());
+				player.lastJournalRight = player.lastJournalRight.split('\n').filter(line => line).map(line => line.trim());
+			});
+			// parse player logs
 			this.parsedChatLogs = this.chatLogsInput.split('[,]').filter(line => line).map(line => line.trim());
 			// this character sequence is the line seperator in raw report logs
 			this.savedChatLogs = this.parsedChatLogs;
@@ -47,7 +53,8 @@ const app = new Vue({
 
 		unloadMatch() {
 			if (this.unloadWipeToggle) this.chatLogsInput = this.matchInfoInput = '';
-			this.parsedMatchInfo = this.parsedChatLogs = this.savedChatLogs = '';
+			this.selectedPlayerJournal = '';
+			this.parsedMatchInfo = this.parsedChatLogs = this.savedChatLogs = [];
 			this.days = this.nights = 0;
 			this.clearFilter();
 
@@ -137,8 +144,8 @@ const app = new Vue({
 
 			if (jumpTo && jumpTo <= this.searchHits.length) this.currentHit = jumpTo;
 
-			if (window.location.href.includes('logLine')) {
-				window.location.href = window.location.href.replace(/#logLine\d+/, `#${this.searchHits[this.currentHit - 1]}`);
+			if (window.location.href.includes('log-line')) {
+				window.location.href = window.location.href.replace(/#log-line-\d+/, `#${this.searchHits[this.currentHit - 1]}`);
 			}
 			else window.location.href += `#${this.searchHits[this.currentHit - 1]}`; // eslint-disable-line curly
 			// substracting 1 from the selection cuz of zero-basing on array indexes, first hit would be the second in the searchHits list otherwise
