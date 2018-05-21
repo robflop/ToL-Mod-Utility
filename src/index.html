@@ -90,7 +90,7 @@
 										<input type="checkbox" :id="`${player.ign}-highlight`" :value="`${player.ign} [${parsedMatchInfo.findIndex(p => p.ign === player.ign) + 1}]`"
 										v-model="highlightedPlayers" :disabled="!isLoaded">
 										<input type="checkbox" :id="`${player.ign}-filter`" :value="`${player.ign} [${parsedMatchInfo.findIndex(p => p.ign === player.ign) + 1}]`"
-										v-model="filteredPlayers" @click="filter" :disabled="!isLoaded">
+										v-model="filteredPlayers" @change="filter" :disabled="!isLoaded">
 										<label :for="`${player.ign}-filter`">
 											<span class="player-filter-ign">{{ player.ign }}</span>
 											<span class="player-filter-num">[{{ parsedMatchInfo.findIndex(p => p.ign === player.ign) + 1 }}]</span>
@@ -111,9 +111,9 @@
 								<label for="search-hit-input">Jump to: </label>
 								<input type="number" @input.number="adjustView(null, jumpToHit)" v-model="jumpToHit" step="1" min="1" :max="searchHits.length" :disabled="!isLoaded || !searchHits.length" @submit.prevent>
 								<label for="regex-search-toggle">RegExp Search</label>
-								<input id="regex-search-toggle" type="checkbox" v-model.trim="regexSearchToggle" @click="searchHits = []; currentHit = jumpToHit = 1;">
+								<input id="regex-search-toggle" type="checkbox" v-model.trim="regexSearchToggle" @change="searchHits = []; currentHit = jumpToHit = 1;">
 								<label for="entire-words-search-toggle">Search entire words</label>
-								<input id="entire-words-search-toggle" type="checkbox" v-model.trim="entireWordsSearchToggle" @click="searchHits = []; currentHit = jumpToHit = 1;">
+								<input id="entire-words-search-toggle" type="checkbox" v-model.trim="entireWordsSearchToggle" @change="searchHits = []; currentHit = jumpToHit = 1;">
 							</form>
 						</div>
 					</form>
