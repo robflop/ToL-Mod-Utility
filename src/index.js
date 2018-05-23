@@ -37,11 +37,12 @@ const app = new Vue({
 				.sort((a, b) => a.piIndex - b.piIndex)
 				.map(player => player.leftGameReason === 'Reconnected' ? player.pConInt = 4 : null);
 			// sort by piIndex and adjust connection status for reconnection
+			this.parsedMatchInfo = this.parsedMatchInfo.filter(player => player.piIndex !== -1);
+			// filter out players that didn't load into the game (piIndex === -1)
 			this.parsedMatchInfo.map(player => { // eslint-disable-line array-callback-return
 				player.lastJournalLeft = player.lastJournalLeft.split('\n').filter(line => line).map(line => line.trim());
 				player.lastJournalRight = player.lastJournalRight.split('\n').filter(line => line).map(line => line.trim());
 			});
-			// parse player logs
 			this.parsedChatLogs = this.chatLogsInput.split('[,]').filter(line => line).map(line => line.trim());
 			// this character sequence is the line seperator in raw report logs
 			this.savedChatLogs = this.parsedChatLogs;
