@@ -73,6 +73,10 @@ label[for="wipe-toggle"] {
 	grid-area: matchinfo-logs;
 }
 
+.playerAccountName {
+	color: #00FFFF;
+}
+
 .selectedJournalInfo {
 	color: #fd0a0a;
 }
