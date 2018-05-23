@@ -1,3 +1,5 @@
+const { remote } = require('electron');
+
 const app = new Vue({
 	el: '#app',
 	data: {
@@ -31,8 +33,14 @@ const app = new Vue({
 		loadMatch() {
 			if (!this.matchInfoInput || !this.chatLogsInput) return;
 
-			this.parsedMatchInfo = JSON.parse(this.matchInfoInput.replace(/[“”`]/g, '"'));
-			// match info from forums has weird quotes, thus replacing them cause they error otherwise
+			try {
+				this.parsedMatchInfo = JSON.parse(this.matchInfoInput.replace(/[“”`]/g, '"'));
+				// match info from forums has weird quotes, thus replacing them cause they error otherwise
+			}
+			catch (e) {
+				return remote.dialog.showErrorBox('An error occurred loading the match info', `${e}\n\nShow this error to robflop.`);
+			}
+
 			this.parsedMatchInfo
 				.sort((a, b) => a.piIndex - b.piIndex)
 				.map(player => player.leftGameReason === 'Reconnected' ? player.pConInt = 4 : null);
