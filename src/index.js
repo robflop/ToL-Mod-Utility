@@ -31,7 +31,7 @@ const app = new Vue({
 		loadMatch() {
 			if (!this.matchInfoInput || !this.chatLogsInput) return;
 
-			this.parsedMatchInfo = JSON.parse(this.matchInfoInput.replace(/[“”'`]/g, '"'));
+			this.parsedMatchInfo = JSON.parse(this.matchInfoInput.replace(/[“”`]/g, '"'));
 			// match info from forums has weird quotes, thus replacing them cause they error otherwise
 			this.parsedMatchInfo
 				.sort((a, b) => a.piIndex - b.piIndex)
