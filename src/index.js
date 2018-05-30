@@ -45,14 +45,15 @@ const app = new Vue({
 				.sort((a, b) => a.piIndex - b.piIndex)
 				.map(player => player.leftGameReason === 'Reconnected' ? player.pConInt = 4 : null);
 			// sort by piIndex and adjust connection status for reconnection
-			this.parsedMatchInfo = this.parsedMatchInfo.filter(player => player.piIndex !== -1);
-			// filter out players that didn't load into the game (piIndex === -1)
+
+			// this.parsedMatchInfo = this.parsedMatchInfo.filter(player => player.piIndex !== -1);
+			// ABOVE DISABLED BECAUSE BROKEN; filter out players that didn't load into the game (piIndex === -1)
 			this.parsedMatchInfo.map(player => { // eslint-disable-line array-callback-return
 				player.lastJournalLeft = player.lastJournalLeft.split('\n').filter(line => line).map(line => line.trim());
 				player.lastJournalRight = player.lastJournalRight.split('\n').filter(line => line).map(line => line.trim());
 			});
 			this.parsedChatLogs = this.chatLogsInput.split('[,]').filter(line => line).map(line => line.trim());
-			// this character sequence is the line seperator in raw report logs
+			// parse chatlogs (character sequence is line seperator) and assign it as base chatlogs "backup" to work with
 			this.savedChatLogs = this.parsedChatLogs;
 			this.days = this.savedChatLogs.filter(line => /\(Day\) Day \d+/.test(line)).length;
 			this.nights = this.savedChatLogs.filter(line => /\(Day\) Night \d+/.test(line)).length;
@@ -186,7 +187,12 @@ const app = new Vue({
 
 			if (this.filteredPlayers.length) {
 				chatLogs = chatLogs.filter(line => {
-					return this.filteredPlayers.some(player => line.includes(player) || line.startsWith('(Day)') || line.startsWith('(Win)'));
+					let hit = false;
+
+					if (this.filteredPlayers.some(player => line.includes(player))) hit = true;
+					if (line.startsWith('(Day)') || line.startsWith('(Win)')) hit = true;
+
+					return hit;
 				});
 			}
 
