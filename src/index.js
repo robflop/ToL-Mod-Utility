@@ -52,8 +52,20 @@ const app = new Vue({
 				player.lastJournalLeft = player.lastJournalLeft.split('\n').filter(line => line).map(line => line.trim());
 				player.lastJournalRight = player.lastJournalRight.split('\n').filter(line => line).map(line => line.trim());
 			});
-			this.parsedChatLogs = this.chatLogsInput.split('[,]').filter(line => line).map(line => line.trim());
-			// parse chatlogs (character sequence is line seperator) and assign it as base chatlogs "backup" to work with
+			this.parsedChatLogs = this.chatLogsInput.split('[,]').filter(line => line)
+			// character sequence in above split is line seperator, filter used to remove empty
+				.map(line => {
+					const colorTagStartRegex = /\[color=#[a-fA-F0-9]{6}\]\s?/;
+					const colorTagEndRegex = /\s?\[\/color]/;
+					const formattingTagRegex = /<\/?[bius]>/gm;
+
+					if (colorTagStartRegex.test(line)) line.match(colorTagStartRegex).forEach(match => line = line.replace(match, ''));
+					if (colorTagEndRegex.test(line)) line.match(colorTagEndRegex).forEach(match => line = line.replace(match, ''));
+					// check log lines for color tags like "[color=#fffff]" and "[/color]", then remove them if found
+					if (formattingTagRegex.test(line)) line.match(formattingTagRegex).forEach(match => line = line.replace(match, ''));
+					// check lines for formatting tags like "<i>..</i>" etc and remove them
+					return line.trim();
+				});
 			this.savedChatLogs = this.parsedChatLogs;
 			this.days = this.savedChatLogs.filter(line => /\(Day\) Day \d+/.test(line)).length;
 			this.nights = this.savedChatLogs.filter(line => /\(Day\) Night \d+/.test(line)).length;
