@@ -24,6 +24,7 @@ const app = new Vue({
 		jumpToHit: 1,
 		unloadWipeToggle: true,
 		seperatorsToggle: false,
+		colorStripToggle: false,
 		regexSearchToggle: false,
 		entireWordsSearchToggle: false,
 		dayNightConflict: false,
@@ -136,6 +137,8 @@ const app = new Vue({
 		},
 
 		checkType(log) {
+			if (this.colorStripToggle) return;
+
 			const types = [
 				'day', 'alive', 'system', 'mind-link', 'attack', 'crier',
 				'dead', 'heal', 'win', 'announcement', 'privateannouncement', 'trollbox'
