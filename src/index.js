@@ -25,6 +25,7 @@ const app = new Vue({
 		unloadWipeToggle: true,
 		seperatorsToggle: false,
 		colorStripToggle: false,
+		tableDisplayToggle: false,
 		regexSearchToggle: false,
 		entireWordsSearchToggle: false,
 		dayNightConflict: false,
@@ -56,6 +57,8 @@ const app = new Vue({
 			this.parsedChatLogs = this.chatLogsInput.split('[,]').filter(line => line)
 			// character sequence in above split is line seperator, filter used to remove empty
 				.map(line => {
+					line = line.trim();
+
 					const colorTagStartRegex = /\[color=#[a-fA-F0-9]{6}\]\s?/;
 					const colorTagEndRegex = /\s?\[\/color]/;
 					const formattingTagRegex = /<\/?[bius]>/gm;
@@ -65,9 +68,23 @@ const app = new Vue({
 					// check log lines for color tags like "[color=#fffff]" and "[/color]", then remove them if found
 					if (formattingTagRegex.test(line)) line.match(formattingTagRegex).forEach(match => line = line.replace(match, ''));
 					// check lines for formatting tags like "<i>..</i>" etc and remove them
-					return line.trim();
+
+					if (this.tableDisplayToggle) {
+						const lineParts = line.startsWith('From') // Only Whispers start like this and have multiple colons
+							? this.splitLine(line)
+							: line.split(':').map(linePart => linePart = linePart.trim());
+
+						if (lineParts[0] && lineParts[1]) lineParts[0] = `${lineParts[0]}:`;
+
+						return line = { meta: lineParts[0], content: lineParts[1] || '' };
+						// split lines in meta info (type, participant, etc) and content (actual message)
+					}
+					else {
+						return line;
+					}
 				});
 			this.savedChatLogs = this.parsedChatLogs;
+
 			this.days = this.savedChatLogs.filter(line => /\(Day\) Day \d+/.test(line)).length;
 			this.nights = this.savedChatLogs.filter(line => /\(Day\) Night \d+/.test(line)).length;
 
@@ -255,11 +272,22 @@ const app = new Vue({
 
 		clearFilter() {
 			this.view = 'generalConfig';
-			this.seperatorsToggle = this.regexSearchToggle = this.entireWordsSearchToggle = false;
+			this.seperatorsToggle = this.colorStripToggle = this.regexSearchToggle = this.entireWordsSearchToggle = false;
 			this.filteredPlayers = this.highlightedPlayers = this.searchHits = [];
 			this.selectedType = this.selectedDay = this.selectedNight = 'All';
 			this.searchInput = '';
 			this.currentHit = this.jumpToHit = 1;
+		},
+
+		splitLine(line) {
+			let currentIndex = 0;
+
+			for (let i = 0; i < 3; i++) {
+				currentIndex = line.indexOf(':', currentIndex);
+				currentIndex++; // increment so it's one past the latest match
+			}
+
+			return [line.substring(0, currentIndex), line.substring(currentIndex)];
 		}
 	}
 });

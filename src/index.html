@@ -21,9 +21,16 @@
 						<input id="input-load" type="submit" value="Load Match" @click.prevent="loadMatch()" :disabled="isLoaded">
 						<input id="input-unload" type="submit" value="Unload Match" @click.prevent="unloadMatch()" :disabled="!isLoaded">
 					
-						<label for="wipe-toggle">Wipe Input on Unload?</label>
-						<input id="wipe-toggle" type="checkbox" v-model.trim="unloadWipeToggle">
+						<div>
+							<label for="wipe-toggle">Wipe Input on Unload?</label>
+							<input id="wipe-toggle" type="checkbox" v-model.trim="unloadWipeToggle">
+						</div>
 						
+						<div>
+							<label for="table-display-toggle">Display as table?</label>
+							<input id="table-display-toggle" type="checkbox" v-model.trim="tableDisplayToggle" v-on="isLoaded ? { change: loadMatch} : {}">
+						</div>
+
 						<div style="color:red; margin-top:35px;">
 							<span v-if="!chatLogsInput || !matchInfoInput">Enter Match info and Chat logs!</span>
 						</div>
@@ -75,12 +82,12 @@
 								<option selected>All</option>
 								<option v-for="night in nights">Night {{ night }}</option>
 							</select>
-						
-							<label for="seperators-toggle">Line seperators: </label>
-							<input id="seperators-toggle" type="checkbox" v-model.trim="seperatorsToggle" :disabled="!isLoaded">
 
 							<label for="color-strip-toggle">Color strip:</label>
 							<input id="color-strip-toggle" type="checkbox" v-model.trim="colorStripToggle" :disabled="!isLoaded">
+
+							<label for="seperators-toggle">Line seperators: </label>
+							<input id="seperators-toggle" type="checkbox" v-model.trim="seperatorsToggle" :disabled="!isLoaded">
 						</div>	
 					
 						<div id="player-options" v-show="view === 'playerOptions'">
@@ -143,7 +150,15 @@
 				</div>
 			
 				<div id="chat-log-wrapper">
-					<p v-for="log in parsedChatLogs" :id="`log-line-${parsedChatLogs.indexOf(log)+1}`" :class="[checkType(log), extraStylingCheck(log)]"> {{ log }}</p>
+					<div v-if="!tableDisplayToggle">
+						<p v-for="log in parsedChatLogs" :id="`log-line-${parsedChatLogs.indexOf(log)+1}`" :class="[checkType(log), extraStylingCheck(log)]"> {{ log }}</p>
+					</div>
+					<table v-if="tableDisplayToggle">
+						<tr v-for="log in parsedChatLogs" :id="`log-line-${parsedChatLogs.indexOf(log)+1}`" :class="[checkType(log.meta), extraStylingCheck(log.meta)]">
+							<td :class="[extraStylingCheck(log.meta)]"> {{ log.meta }} </td>
+							<td :class="[extraStylingCheck(log.content)]"> {{ log.content }} </td>
+						</tr>
+					</table>
 				</div>
 			</div>
 
