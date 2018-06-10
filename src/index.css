@@ -102,7 +102,8 @@ label[for="wipe-toggle"], label[for="table-display-toggle"] {
 	margin-left: 10px;
 }
 
-#chat-log-wrapper > p {
+#chat-log-wrapper span {
+	display: block;
 	margin: 10px 5px;
 }
 
