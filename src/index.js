@@ -9,6 +9,7 @@ const app = new Vue({
 		savedChatLogs: [],
 		parsedMatchInfo: [],
 		parsedChatLogs: [],
+		parsedTableChatLogs: [],
 		days: 0,
 		nights: 0,
 		view: 'generalConfig',
@@ -28,7 +29,6 @@ const app = new Vue({
 		tableDisplayToggle: false,
 		regexSearchToggle: false,
 		entireWordsSearchToggle: false,
-		dayNightConflict: false,
 		connectionStatuses: ['Connected', 'Left Alive', 'Left Dead', 'Left Won Early', 'Reconnected']
 	},
 	methods: {
@@ -51,10 +51,10 @@ const app = new Vue({
 			// this.parsedMatchInfo = this.parsedMatchInfo.filter(player => player.piIndex !== -1);
 			// ABOVE DISABLED BECAUSE BROKEN; filter out players that didn't load into the game (piIndex === -1)
 			this.parsedMatchInfo.map(player => { // eslint-disable-line array-callback-return
-				player.lastJournalLeft = player.lastJournalLeft.split('\n').filter(line => line).map(line => line.trim());
-				player.lastJournalRight = player.lastJournalRight.split('\n').filter(line => line).map(line => line.trim());
+				player.lastJournalLeft = player.lastJournalLeft.split('\n').filter(line => line !== '').map(line => line.trim());
+				player.lastJournalRight = player.lastJournalRight.split('\n').filter(line => line !== '').map(line => line.trim());
 			});
-			this.parsedChatLogs = this.chatLogsInput.split('[,]').filter(line => line)
+			this.parsedChatLogs = this.chatLogsInput.split('[,]').filter(line => line !== '')
 			// character sequence in above split is line seperator, filter used to remove empty
 				.map(line => {
 					line = line.trim();
@@ -68,22 +68,23 @@ const app = new Vue({
 					// check log lines for color tags like "[color=#fffff]" and "[/color]", then remove them if found
 					if (formattingTagRegex.test(line)) line.match(formattingTagRegex).forEach(match => line = line.replace(match, ''));
 					// check lines for formatting tags like "<i>..</i>" etc and remove them
-
-					if (this.tableDisplayToggle) {
-						const lineParts = line.startsWith('From') // Only Whispers start like this and have multiple colons
-							? this.splitLine(line)
-							: line.split(':').map(linePart => linePart = linePart.trim());
-
-						if (lineParts[0] && lineParts[1]) lineParts[0] = `${lineParts[0]}:`;
-
-						return line = { meta: lineParts[0], content: lineParts[1] || '' };
-						// split lines in meta info (type, participant, etc) and content (actual message)
-					}
-					else {
-						return line;
-					}
+					return line;
 				});
+			this.parsedTableChatLogs = this.parsedChatLogs.map(line => {
+				const lineParts = line.startsWith('From') // Only Whispers start like this and have multiple colons
+					? this.splitLine(line)
+					: line.split(':').map(linePart => linePart = linePart.trim());
+
+				if (lineParts[0] && lineParts[1]) lineParts[0] = `${lineParts[0]}:`;
+
+				return line = { meta: lineParts[0], content: lineParts[1] || '', origin: line };
+				// split lines in meta info (type, participant, etc), content (actual message) and unmodified line
+			});
+
 			this.savedChatLogs = this.parsedChatLogs;
+
+			if (this.tableDisplayToggle) this.parsedChatLogs = this.parsedTableChatLogs;
+			else this.parsedChatLogs = this.savedChatLogs;
 
 			this.days = this.savedChatLogs.filter(line => /\(Day\) Day \d+/.test(line)).length;
 			this.nights = this.savedChatLogs.filter(line => /\(Day\) Night \d+/.test(line)).length;
@@ -196,10 +197,35 @@ const app = new Vue({
 		filter() {
 			let chatLogs = this.savedChatLogs;
 			// base (unmodified) logs
+			let matchedLogIndexes = Array.from(this.savedChatLogs.keys());
+			// Make an array with all chatlog entry indexes to later sort out 
+			const sortingIndexes = {};
 
-			if (this.selectedDay !== 'All' && this.selectedNight !== 'All') this.dayNightConflict = true;
-			else this.dayNightConflict = false;
-			// when both day and night are filtered for
+			if (this.selectedDay !== 'All' && this.selectedNight !== 'All') {
+				if (!this.tableDisplayToggle) {
+					return this.parsedChatLogs = [
+						'[Utility Info] Filtering for a specific Night and specific Day at the same time is not possible.',
+						'[Utility Info] Please unselect either the Night filter or the Day filter for the filter to function.',
+						'[Utility Info] Thank you very much, and apologies for the inconvenience.'
+					];
+				}
+				else {
+					return this.parsedChatLogs = [
+						{
+							origin: '',
+							meta: '[Utility Info] Filtering for a specific Night and specific Day at the same time is not possible.'
+						},
+						{
+							origin: '',
+							meta: '[Utility Info] Please unselect either the Night filter or the Day filter for the filter to function.'
+						},
+						{
+							origin: '',
+							meta: '[Utility Info] Thank you very much, and apologies for the inconvenience.'
+						}
+					];
+				}
+			} // display error info if both day and night were filtered by, because that doesn't make sense
 
 			if (this.selectedType !== 'All') {
 				if (this.selectedType === 'Whisper') {
@@ -215,6 +241,8 @@ const app = new Vue({
 						// fyi to future self, the missing closing bracket in the type check is intended
 					});
 				}
+
+				sortingIndexes.typeIndexes = chatLogs.map(line => line = this.savedChatLogs.indexOf(line));
 			}
 
 			if (this.filteredPlayers.length) {
@@ -226,6 +254,8 @@ const app = new Vue({
 
 					return hit;
 				});
+
+				sortingIndexes.playerIndexes = chatLogs.map(line => line = this.savedChatLogs.indexOf(line));
 			}
 
 			if (this.selectedDay !== 'All') {
@@ -243,6 +273,8 @@ const app = new Vue({
 					else { return false; }
 					// to avoid logs from other phases that have the same content as the one from this phase
 				});
+
+				sortingIndexes.dayIndexes = chatLogs.map(line => line = this.savedChatLogs.indexOf(line));
 			}
 
 			if (this.selectedNight !== 'All') {
@@ -257,17 +289,23 @@ const app = new Vue({
 					else { return false; }
 					// to avoid logs from other phases that have the same content as the one from this phase
 				});
+
+				sortingIndexes.nightIndexes = chatLogs.map(line => line = this.savedChatLogs.indexOf(line));
 			}
 
-			if (this.dayNightConflict) {
-				return this.parsedChatLogs = [
-					'[Utility Info] Filtering for a specific Night and specific Day at the same time is not possible.',
-					'[Utility Info] Please unselect either the Night filter or the Day filter for the filter to function.',
-					'[Utility Info] Thank you very much, and apologies for the inconvenience.'
-				];
-			} // display error info if both day and night were filtered by, because that doesn't make sense
+			matchedLogIndexes = matchedLogIndexes.filter(index => {
+				return Object.values(sortingIndexes).every(sortingOption => {
+					return sortingOption.includes(index);
+				});
+			});
+			// sort to only include indexes included in every sorting option
 
-			return this.parsedChatLogs = chatLogs;
+			matchedLogIndexes = Array.from(new Set(matchedLogIndexes)).sort((a, b) => a > b);
+			// convert to set and back to array to remove dupes, since sets can't have dupes, and sort
+
+			return this.parsedChatLogs = (this.tableDisplayToggle ? this.parsedTableChatLogs : this.savedChatLogs).filter(line => {
+				return matchedLogIndexes.includes((this.tableDisplayToggle ? this.parsedTableChatLogs : this.savedChatLogs).indexOf(line));
+			});
 		},
 
 		clearFilter() {
@@ -287,7 +325,8 @@ const app = new Vue({
 				currentIndex++; // increment so it's one past the latest match
 			}
 
-			return [line.substring(0, currentIndex), line.substring(currentIndex)];
+			return [line.substring(0, currentIndex - 3), line.substring(currentIndex)];
+			// minus 3 because the last 3 character are unnecessary whitespace and colons
 		}
 	}
 });

@@ -102,7 +102,7 @@ label[for="wipe-toggle"], label[for="table-display-toggle"] {
 }
 
 #chat-log-wrapper table {
-	border-spacing: 0 5px;
+	border-spacing: 5px 5px;
 }
 
 #player-options {
