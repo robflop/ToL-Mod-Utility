@@ -28,6 +28,7 @@ const app = new Vue({
 		colorStripToggle: false,
 		tableDisplayToggle: false,
 		regexSearchToggle: false,
+		regexFlags: [],
 		entireWordsSearchToggle: false,
 		connectionStatuses: ['Connected', 'Left Alive', 'Left Dead', 'Left Won Early', 'Reconnected']
 	},
@@ -123,7 +124,8 @@ const app = new Vue({
 					if (log.toLowerCase().includes(this.searchInput.toLowerCase())) searchHit = true;
 				}
 				else if (this.regexSearchToggle) {
-					if (this.searchInput.test(log)) searchHit = true;
+					const searchRegex = new RegExp(this.searchInput, this.regexFlags.join(''));
+					if (searchRegex && searchRegex.test(log)) searchHit = true;
 				}
 				else if (this.entireWordsSearchToggle) {
 					if (this.searchInput.split(' ').every(searchWord => log.split(' ').includes(searchWord))) searchHit = true;
