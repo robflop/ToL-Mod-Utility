@@ -55,8 +55,9 @@ const app = new Vue({
 				player.lastJournalRight = player.lastJournalRight.split('\n').filter(line => line !== '').map(line => line.trim());
 			});
 
-			this.parsedChatLogs = this.chatLogsInput.split('[,]').filter(line => line !== '')
+			this.parsedChatLogs = this.chatLogsInput.replace(/(\[,\]\s)(\[,\]\s)/g, '$1').split('[,]')
 			// Character sequence in above split is line seperator, filter used to remove empty lines
+			// Replace is used to kill the extra empty lines included in the chat logs from forums
 				.map(line => {
 					line = line.trim();
 
