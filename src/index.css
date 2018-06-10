@@ -23,6 +23,12 @@ form select, form input, form label {
 	max-width: 95%;
 }
 
+.regex-flags {
+	display: inline-block;
+	width: 15%;
+	margin: 10px auto;
+}
+
 #player-options input, #player-options label, input[id^="view-"], label[for^="view-"] {
     display: inline;
 }
@@ -129,7 +135,7 @@ label[for="wipe-toggle"], label[for="table-display-toggle"] {
 	vertical-align: sub;
 }
 
-#filter-span {
+#filter-player-span {
 	padding-left: 4px;
 	vertical-align: sub;
 }
