@@ -37,7 +37,7 @@ const app = new Vue({
 
 			try {
 				this.parsedMatchInfo = JSON.parse(this.matchInfoInput.replace(/[“”`]/g, '"'));
-				// match info from forums has weird quotes, thus replacing them cause they error otherwise
+				// Match info from forums has weird quotes, thus replacing them cause they error otherwise
 			}
 			catch (e) {
 				return remote.dialog.showErrorBox('An error occurred loading the match info', `${e}\n\nShow this error to robflop.`);
@@ -46,7 +46,7 @@ const app = new Vue({
 			this.parsedMatchInfo
 				.sort((a, b) => a.piIndex - b.piIndex)
 				.map(player => player.leftGameReason === 'Reconnected' ? player.pConInt = 4 : null);
-			// sort by piIndex and adjust connection status for reconnection
+			// Sort by piIndex and adjust connection status for reconnection
 
 			// this.parsedMatchInfo = this.parsedMatchInfo.filter(player => player.piIndex !== -1);
 			// ABOVE DISABLED BECAUSE BROKEN; filter out players that didn't load into the game (piIndex === -1)
@@ -55,7 +55,8 @@ const app = new Vue({
 				player.lastJournalRight = player.lastJournalRight.split('\n').filter(line => line !== '').map(line => line.trim());
 			});
 			this.parsedChatLogs = this.chatLogsInput.split('[,]').filter(line => line !== '')
-			// character sequence in above split is line seperator, filter used to remove empty
+
+			// Character sequence in above split is line seperator, filter used to remove empty lines
 				.map(line => {
 					line = line.trim();
 
@@ -65,11 +66,12 @@ const app = new Vue({
 
 					if (colorTagStartRegex.test(line)) line.match(colorTagStartRegex).forEach(match => line = line.replace(match, ''));
 					if (colorTagEndRegex.test(line)) line.match(colorTagEndRegex).forEach(match => line = line.replace(match, ''));
-					// check log lines for color tags like "[color=#fffff]" and "[/color]", then remove them if found
+					// Check log lines for color tags like "[color=#fffff]" and "[/color]", then remove them if found
 					if (formattingTagRegex.test(line)) line.match(formattingTagRegex).forEach(match => line = line.replace(match, ''));
-					// check lines for formatting tags like "<i>..</i>" etc and remove them
+					// Check lines for formatting tags like "<i>..</i>" etc and remove them
 					return line;
 				});
+
 			this.parsedTableChatLogs = this.parsedChatLogs.map(line => {
 				const lineParts = line.startsWith('From') // Only Whispers start like this and have multiple colons
 					? this.splitLine(line)
@@ -78,13 +80,12 @@ const app = new Vue({
 				if (lineParts[0] && lineParts[1]) lineParts[0] = `${lineParts[0]}:`;
 
 				return line = { meta: lineParts[0], content: lineParts[1] || '', origin: line };
-				// split lines in meta info (type, participant, etc), content (actual message) and unmodified line
+				// Split lines in meta info (type, participant, etc), content (actual message) and unmodified line
 			});
 
 			this.savedChatLogs = this.parsedChatLogs;
 
 			if (this.tableDisplayToggle) this.parsedChatLogs = this.parsedTableChatLogs;
-			else this.parsedChatLogs = this.savedChatLogs;
 
 			this.days = this.savedChatLogs.filter(line => /\(Day\) Day \d+/.test(line)).length;
 			this.nights = this.savedChatLogs.filter(line => /\(Day\) Night \d+/.test(line)).length;
@@ -95,8 +96,9 @@ const app = new Vue({
 		unloadMatch() {
 			if (this.unloadWipeToggle) this.chatLogsInput = this.matchInfoInput = '';
 			this.selectedPlayerJournal = '';
-			this.parsedMatchInfo = this.parsedChatLogs = this.savedChatLogs = [];
+			this.parsedMatchInfo = this.parsedChatLogs = this.parsedTableChatLogs = this.savedChatLogs = [];
 			this.days = this.nights = 0;
+			this.view = 'generalConfig';
 			this.clearFilter();
 
 			return this.isLoaded = false;
@@ -126,7 +128,7 @@ const app = new Vue({
 				}
 
 				if (searchHit) {
-					if (!this.searchHits.includes(logLine)) this.searchHits.push(logLine); // for anchor navigation
+					if (!this.searchHits.includes(logLine)) this.searchHits.push(logLine); // For anchor navigation
 					classes.push('highlight-search');
 				}
 			}
@@ -136,17 +138,17 @@ const app = new Vue({
 
 		checkFaction(playerFaction) {
 			const factions = ['unseen', 'cult', 'neutral'];
-			// blue dragon manually matched below due to reasons also below
+			// Blue dragon manually matched below due to reasons also below
 
 			let faction;
 
 			factions.some(fact => { // eslint-disable-line array-callback-return
 				if (playerFaction.replace(/\s+/g, '-').toLowerCase() === fact) return faction = fact;
-				// replace spaces with dashes because you can't have spaces in css class names
+				// Replace spaces with dashes because you can't have spaces in css class names
 			});
 
 			if (playerFaction === 'BlueDragon') return faction = 'blue-dragon';
-			// bd isn't seperated by a space, so matching and replacing that to be compliant with css names would be messy
+			// BD isn't seperated by a space, so matching and replacing that to be compliant with css names would be messy
 			return faction;
 		},
 
@@ -160,13 +162,13 @@ const app = new Vue({
 			const types = [
 				'day', 'alive', 'system', 'mind-link', 'attack', 'crier',
 				'dead', 'heal', 'win', 'announcement', 'privateannouncement', 'trollbox'
-			]; // no type for whisper because that's regex'd below due to formatting
+			]; // No type for whisper because that's regex'd below due to formatting
 
 			let logType;
 
 			types.some(type => { // eslint-disable-line array-callback-return
 				if (log.toLowerCase().replace(/\s+/g, '-').startsWith(`(${type}`)) return logType = type;
-				// replace spaces with dashes because can't have spaces in css class names
+				// Replace spaces with dashes because can't have spaces in css class names
 			});
 
 			if (/^From ([\w\s]+) \[\d+\]/.test(log)) return 'whisper';
@@ -174,12 +176,12 @@ const app = new Vue({
 		},
 
 		adjustView(forward, jumpTo) {
-			// parse int because number input turns out as string
+			// Parse int because number input turns out as string
 			if (forward) {
 				if (parseInt(this.currentHit) + 1 > this.searchHits.length) this.currentHit = 1;
 				else ++this.currentHit;
 			}
-			else if (!forward && forward !== null) { // not-null check for jumps
+			else if (!forward && forward !== null) { // Not-null check for jumps
 				if (parseInt(this.currentHit) - 1 < 1) this.currentHit = this.searchHits.length;
 				else --this.currentHit;
 			}
@@ -190,16 +192,17 @@ const app = new Vue({
 			if (window.location.href.includes('log-line')) {
 				window.location.href = window.location.href.replace(/#log-line-\d+/, `#${this.searchHits[this.currentHit - 1]}`);
 			}
-			else window.location.href += `#${this.searchHits[this.currentHit - 1]}`; // eslint-disable-line curly
-			// substracting 1 from the selection cuz of zero-basing on array indexes, first hit would be the second in the searchHits list otherwise
+			else {
+				window.location.href += `#${this.searchHits[this.currentHit - 1]}`;
+			} // Substracting 1 from the selection cuz of zero-basing on array indices, first hit would be the second in the searchHits list otherwise
 		},
 
 		filter() {
 			let chatLogs = this.savedChatLogs;
-			// base (unmodified) logs
-			let matchedLogIndexes = Array.from(this.savedChatLogs.keys());
-			// Make an array with all chatlog entry indexes to later sort out
-			const sortingIndexes = {};
+			// Base (unmodified) logs
+			let matchedLogIndices = Array.from(this.savedChatLogs.keys());
+			// Make an array with all chatlog entry indices to later sort out
+			const sortingIndices = {};
 
 			if (this.selectedDay !== 'All' && this.selectedNight !== 'All') {
 				if (!this.tableDisplayToggle) {
@@ -225,11 +228,11 @@ const app = new Vue({
 						}
 					];
 				}
-			} // display error info if both day and night were filtered by, because that doesn't make sense
+			} // Display error info if both day and night were filtered by, because that doesn't make sense
 
 			if (this.selectedType !== 'All') {
 				if (this.selectedType === 'Whisper') {
-					// whispers are special because they don't follow the format of other types
+					// Whispers are special because they don't follow the format of other types
 					const whisperRegex = /From [\w\s]+ \[\d+] \([\w\s]+\):/;
 					chatLogs = chatLogs.filter(line => {
 						return whisperRegex.test(line) || line.startsWith('(Day)') || line.startsWith('(Win)');
@@ -238,11 +241,11 @@ const app = new Vue({
 				else {
 					chatLogs = chatLogs.filter(line => {
 						return line.startsWith(`(${this.selectedType}`) || line.startsWith('(Day)') || line.startsWith('(Win)');
-						// fyi to future self, the missing closing bracket in the type check is intended
+						// Fyi to future self, the missing closing bracket in the type check is intended
 					});
 				}
 
-				sortingIndexes.typeIndexes = chatLogs.map(line => line = this.savedChatLogs.indexOf(line));
+				sortingIndices.typeIndices = chatLogs.map(line => line = this.savedChatLogs.indexOf(line));
 			}
 
 			if (this.filteredPlayers.length) {
@@ -255,67 +258,61 @@ const app = new Vue({
 					return hit;
 				});
 
-				sortingIndexes.playerIndexes = chatLogs.map(line => line = this.savedChatLogs.indexOf(line));
+				sortingIndices.playerIndices = chatLogs.map(line => line = this.savedChatLogs.indexOf(line));
 			}
 
 			if (this.selectedDay !== 'All') {
 				const start = chatLogs.indexOf(`(Day) ${this.selectedDay}`);
 				let end = chatLogs.indexOf(`(Day) Night ${parseInt(this.selectedDay.replace('Day', ''))}`);
-				// last line of the day is the first line of the following night
+				// Last line of the day is the first line of the following night
 
 				if (parseInt(this.selectedDay.replace('Day', '')) === this.days) end = chatLogs.length;
-				// for last day since there isn't a night following it to detect
+				// For last day since there isn't a night following it to detect
 
-				// chatLogs = chatLogs.filter((line, index) => {
-				// 	if (index >= start && index <= end) return true;
-				// 	else return false;
-				// });
-
-				// sortingIndexes.dayIndexes = chatLogs.map(line => line = this.savedChatLogs.indexOf(line));
-				sortingIndexes.dayIndexes = Array.from({ length: end - (start - 1) }, (v, i) => i + start);
-				// fill the array with all numbers from start to end, minus one to include last number (end)
+				sortingIndices.dayIndices = Array.from({ length: end - (start - 1) }, (v, i) => i + start);
+				// Fill the indices array with all indices from start to end, minus one to include last number (end)
 			}
 
 			if (this.selectedNight !== 'All') {
 				const start = chatLogs.indexOf(`(Day) ${this.selectedNight}`);
 				const end = chatLogs.indexOf(`(Day) Day ${parseInt(this.selectedNight.replace('Night', '')) + 1}`);
-				// last line of the night is the first line of the following day
+				// Last line of the night is the first line of the following day
 
 				chatLogs = chatLogs.filter((line, index) => {
 					if (index >= start && index <= end) return true;
 					else return false;
 				});
 
-				sortingIndexes.nightIndexes = chatLogs.map(line => line = this.savedChatLogs.indexOf(line));
+				sortingIndices.nightIndices = Array.from({ length: end - (start - 1) }, (v, i) => i + start);
 			}
 
-			matchedLogIndexes = matchedLogIndexes.filter(index => {
-				return Object.values(sortingIndexes).every(sortingOption => {
+			matchedLogIndices = matchedLogIndices.filter(index => {
+				return Object.values(sortingIndices).every(sortingOption => {
 					return sortingOption.includes(index);
 				});
-			}); // sort to only include indexes included in every sorting option
+			}); // Sort to only include indices included in every sorting option
 
-			matchedLogIndexes = matchedLogIndexes.sort((a, b) => a - b);
+			matchedLogIndices = matchedLogIndices.sort((a, b) => a - b);
 
-			const knownIndexes = {};
+			const knownIndices = {};
 			const appropriateLogs = this.tableDisplayToggle ? this.parsedTableChatLogs : this.savedChatLogs;
 
 			return this.parsedChatLogs = appropriateLogs.filter(line => {
 				let lineIndex = appropriateLogs.indexOf(line);
-				let indexFound = matchedLogIndexes.includes(lineIndex);
+				let indexFound = matchedLogIndices.includes(lineIndex);
 
-				if (knownIndexes.hasOwnProperty(line)) {
-					lineIndex = appropriateLogs.indexOf(line, knownIndexes[line] + 1);
-					// grab the same line but with the offset from finding it the previous time
-					indexFound = matchedLogIndexes.includes(lineIndex);
-					// re-evaluate if index is to be included
+				if (knownIndices.hasOwnProperty(line)) {
+					lineIndex = appropriateLogs.indexOf(line, knownIndices[line] + 1);
+					// Grab the same line but with the offset from finding it the previous time
+					indexFound = matchedLogIndices.includes(lineIndex);
+					// Re-evaluate if index is to be included
 				}
 
-				if (indexFound || knownIndexes.hasOwnProperty(line)) knownIndexes[line] = lineIndex;
+				if (indexFound || knownIndices.hasOwnProperty(line)) knownIndices[line] = lineIndex;
 
-				const outOfBoundsIndex = (indexFound && lineIndex < matchedLogIndexes[0])
-				|| (indexFound && lineIndex > matchedLogIndexes[matchedLogIndexes.length - 1]);
-				// same message, different index (e.g. player writing the same thing on different days)
+				const outOfBoundsIndex = (indexFound && lineIndex < matchedLogIndices[0])
+				|| (indexFound && lineIndex > matchedLogIndices[matchedLogIndices.length - 1]);
+				// Same message, different index (e.g. player writing the same thing on different days)
 
 				if (!indexFound) {
 					return false;
@@ -330,8 +327,6 @@ const app = new Vue({
 		},
 
 		clearFilter() {
-			this.view = 'generalConfig';
-			this.seperatorsToggle = this.colorStripToggle = this.regexSearchToggle = this.entireWordsSearchToggle = false;
 			this.filteredPlayers = this.highlightedPlayers = this.searchHits = [];
 			this.selectedType = this.selectedDay = this.selectedNight = 'All';
 			this.searchInput = '';
@@ -343,11 +338,11 @@ const app = new Vue({
 
 			for (let i = 0; i < 3; i++) {
 				currentIndex = line.indexOf(':', currentIndex);
-				currentIndex++; // increment so it's one past the latest match
+				currentIndex++; // Increment so it's one past the latest match
 			}
 
 			return [line.substring(0, currentIndex - 3), line.substring(currentIndex)];
-			// minus 3 because the last 3 character are unnecessary whitespace and colons
+			// Minus 3 because the last 3 character are unnecessary whitespace and colons
 		}
 	}
 });
