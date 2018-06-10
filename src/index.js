@@ -84,11 +84,12 @@ const app = new Vue({
 			});
 
 			this.savedChatLogs = this.parsedChatLogs;
+			// Logs backup to refer to in filtering etc
 
 			if (this.tableDisplayToggle) this.parsedChatLogs = this.parsedTableChatLogs;
 
-			this.days = this.savedChatLogs.filter(line => /\(Day\) Day \d+/.test(line)).length;
-			this.nights = this.savedChatLogs.filter(line => /\(Day\) Night \d+/.test(line)).length;
+			this.days = this.savedChatLogs.filter(line => /^\(Day\) Day \d+/.test(line)).length;
+			this.nights = this.savedChatLogs.filter(line => /^\(Day\) Night \d+/.test(line)).length;
 
 			return this.isLoaded = true;
 		},
@@ -142,9 +143,10 @@ const app = new Vue({
 
 			let faction;
 
-			factions.some(fact => { // eslint-disable-line array-callback-return
+			factions.some(fact => {
 				if (playerFaction.replace(/\s+/g, '-').toLowerCase() === fact) return faction = fact;
 				// Replace spaces with dashes because you can't have spaces in css class names
+				else return null;
 			});
 
 			if (playerFaction === 'BlueDragon') return faction = 'blue-dragon';
@@ -160,15 +162,16 @@ const app = new Vue({
 			if (this.colorStripToggle) return;
 
 			const types = [
-				'day', 'alive', 'system', 'mind-link', 'attack', 'crier',
-				'dead', 'heal', 'win', 'announcement', 'privateannouncement', 'trollbox'
+				'day', 'alive', 'system', 'mind-link', 'attack', 'dead',
+				'heal', 'win', 'announcement', 'privateannouncement', 'trollbox'
 			]; // No type for whisper because that's regex'd below due to formatting
 
 			let logType;
 
-			types.some(type => { // eslint-disable-line array-callback-return
+			types.some(type => {
 				if (log.toLowerCase().replace(/\s+/g, '-').startsWith(`(${type}`)) return logType = type;
 				// Replace spaces with dashes because can't have spaces in css class names
+				else return null;
 			});
 
 			if (/^From ([\w\s]+) \[\d+\]/.test(log)) return 'whisper';
@@ -214,18 +217,9 @@ const app = new Vue({
 				}
 				else {
 					return this.parsedChatLogs = [
-						{
-							origin: '',
-							meta: '[Utility Info] Filtering for a specific Night and specific Day at the same time is not possible.'
-						},
-						{
-							origin: '',
-							meta: '[Utility Info] Please unselect either the Night filter or the Day filter for the filter to function.'
-						},
-						{
-							origin: '',
-							meta: '[Utility Info] Thank you very much, and apologies for the inconvenience.'
-						}
+						{ origin: '', meta: '[Utility Info] Filtering for a specific Night and specific Day at the same time is not possible.' },
+						{ origin: '', meta: '[Utility Info] Please unselect either the Night filter or the Day filter for the filter to function.' },
+						{ origin: '', meta: '[Utility Info] Thank you very much, and apologies for the inconvenience.' }
 					];
 				}
 			} // Display error info if both day and night were filtered by, because that doesn't make sense
@@ -234,6 +228,7 @@ const app = new Vue({
 				if (this.selectedType === 'Whisper') {
 					// Whispers are special because they don't follow the format of other types
 					const whisperRegex = /From [\w\s]+ \[\d+] \([\w\s]+\):/;
+
 					chatLogs = chatLogs.filter(line => {
 						return whisperRegex.test(line) || line.startsWith('(Day)') || line.startsWith('(Win)');
 					});
@@ -290,7 +285,7 @@ const app = new Vue({
 				return Object.values(sortingIndices).every(sortingOption => {
 					return sortingOption.includes(index);
 				});
-			}); // Sort to only include indices included in every sorting option
+			}); // Filter to only include indices included in every chosen sorting option's results
 
 			matchedLogIndices = matchedLogIndices.sort((a, b) => a - b);
 
@@ -299,25 +294,25 @@ const app = new Vue({
 
 			return this.parsedChatLogs = appropriateLogs.filter(line => {
 				let lineIndex = appropriateLogs.indexOf(line);
-				let indexFound = matchedLogIndices.includes(lineIndex);
+				let inIndiceRange = matchedLogIndices.includes(lineIndex);
 
 				if (knownIndices.hasOwnProperty(line)) {
 					lineIndex = appropriateLogs.indexOf(line, knownIndices[line] + 1);
 					// Grab the same line but with the offset from finding it the previous time
-					indexFound = matchedLogIndices.includes(lineIndex);
-					// Re-evaluate if index is to be included
+					inIndiceRange = matchedLogIndices.includes(lineIndex);
+					// Re-evaluate if new index is to be included if found
 				}
 
-				if (indexFound || knownIndices.hasOwnProperty(line)) knownIndices[line] = lineIndex;
+				if (inIndiceRange || knownIndices.hasOwnProperty(line)) knownIndices[line] = lineIndex;
 
-				const outOfBoundsIndex = (indexFound && lineIndex < matchedLogIndices[0])
-				|| (indexFound && lineIndex > matchedLogIndices[matchedLogIndices.length - 1]);
+				const outOfBounds = (inIndiceRange && lineIndex < matchedLogIndices[0])
+				|| (inIndiceRange && lineIndex > matchedLogIndices[matchedLogIndices.length - 1]);
 				// Same message, different index (e.g. player writing the same thing on different days)
 
-				if (!indexFound) {
+				if (!inIndiceRange) {
 					return false;
 				}
-				else if (outOfBoundsIndex) {
+				else if (outOfBounds) {
 					return false;
 				}
 				else {
