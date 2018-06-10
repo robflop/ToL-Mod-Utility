@@ -60,12 +60,12 @@ ol > li, #player-options {
 	text-align: center;
 }
 
-#wipe-toggle {
+#wipe-toggle, #table-display-toggle {
 	display: inline-block;
 	vertical-align: bottom;
 }
 
-label[for="wipe-toggle"] {
+label[for="wipe-toggle"], label[for="table-display-toggle"] {
 	display: inline-block;
 }
 
@@ -99,6 +99,10 @@ label[for="wipe-toggle"] {
 
 #chat-log-wrapper > p {
 	margin: 10px 5px;
+}
+
+#chat-log-wrapper table {
+	border-spacing: 0 5px;
 }
 
 #player-options {

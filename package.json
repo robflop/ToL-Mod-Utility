@@ -1,6 +1,6 @@
 {
 	"name": "ToL-Mod-Utility",
-	"version": "1.9.0",
+	"version": "1.10.0",
 	"productName": "ToL-Mod-Utility",
 	"description": "Moderation utility for Throne of Lies player reports.",
 	"main": "./src/client",
