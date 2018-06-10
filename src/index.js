@@ -196,10 +196,14 @@ const app = new Vue({
 			if (jumpTo && jumpTo <= this.searchHits.length) this.currentHit = jumpTo;
 
 			if (window.location.href.includes('log-line')) {
-				window.location.href = window.location.href.replace(/#log-line-\d+/, `#${this.searchHits[this.currentHit - 1]}`);
+				if (window.location.href.includes('log-line--1')) {
+					return window.location.href = window.location.href.replace('#log-line--1', `#${this.searchHits[this.currentHit - 1]}`);
+				}
+				return window.location.href = window.location.href.replace(/#log-line-\d+/, `#${this.searchHits[this.currentHit - 1]}`);
 			}
 			else {
-				window.location.href += `#${this.searchHits[this.currentHit - 1]}`;
+				if (this.currentHit - 1 < 0) return window.location.href += `#${this.searchHits[0]}`;
+				else return window.location.href += `#${this.searchHits[this.currentHit - 1]}`;
 			} // Substracting 1 from the selection cuz of zero-basing on array indices, first hit would be the second in the searchHits list otherwise
 		},
 
