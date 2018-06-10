@@ -28,7 +28,7 @@
 						
 						<div>
 							<label for="table-display-toggle">Display as table?</label>
-							<input id="table-display-toggle" type="checkbox" v-model.trim="tableDisplayToggle" v-on="isLoaded ? { change: loadMatch} : {}">
+							<input id="table-display-toggle" type="checkbox" v-model.trim="tableDisplayToggle" v-on="isLoaded ? { change: loadMatch && filter} : {}">
 						</div>
 
 						<div style="color:red; margin-top:35px;">

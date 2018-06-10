@@ -198,7 +198,7 @@ const app = new Vue({
 			let chatLogs = this.savedChatLogs;
 			// base (unmodified) logs
 			let matchedLogIndexes = Array.from(this.savedChatLogs.keys());
-			// Make an array with all chatlog entry indexes to later sort out 
+			// Make an array with all chatlog entry indexes to later sort out
 			const sortingIndexes = {};
 
 			if (this.selectedDay !== 'All' && this.selectedNight !== 'All') {
@@ -262,32 +262,28 @@ const app = new Vue({
 				const start = chatLogs.indexOf(`(Day) ${this.selectedDay}`);
 				let end = chatLogs.indexOf(`(Day) Night ${parseInt(this.selectedDay.replace('Day', ''))}`);
 				// last line of the day is the first line of the following night
-				const iterated = [];
 
 				if (parseInt(this.selectedDay.replace('Day', '')) === this.days) end = chatLogs.length;
 				// for last day since there isn't a night following it to detect
 
-				chatLogs = chatLogs.filter((line, index) => {
-					if (iterated.includes(index)) { return false; }
-					if (index >= start && index <= end) { iterated.push(index); return true; }
-					else { return false; }
-					// to avoid logs from other phases that have the same content as the one from this phase
-				});
+				// chatLogs = chatLogs.filter((line, index) => {
+				// 	if (index >= start && index <= end) return true;
+				// 	else return false;
+				// });
 
-				sortingIndexes.dayIndexes = chatLogs.map(line => line = this.savedChatLogs.indexOf(line));
+				// sortingIndexes.dayIndexes = chatLogs.map(line => line = this.savedChatLogs.indexOf(line));
+				sortingIndexes.dayIndexes = Array.from({ length: end - (start - 1) }, (v, i) => i + start);
+				// fill the array with all numbers from start to end, minus one to include last number (end)
 			}
 
 			if (this.selectedNight !== 'All') {
 				const start = chatLogs.indexOf(`(Day) ${this.selectedNight}`);
 				const end = chatLogs.indexOf(`(Day) Day ${parseInt(this.selectedNight.replace('Night', '')) + 1}`);
 				// last line of the night is the first line of the following day
-				const iterated = [];
 
 				chatLogs = chatLogs.filter((line, index) => {
-					if (iterated.includes(index)) { return false; }
-					if (index >= start && index <= end) { iterated.push(index); return true; }
-					else { return false; }
-					// to avoid logs from other phases that have the same content as the one from this phase
+					if (index >= start && index <= end) return true;
+					else return false;
 				});
 
 				sortingIndexes.nightIndexes = chatLogs.map(line => line = this.savedChatLogs.indexOf(line));
@@ -297,14 +293,39 @@ const app = new Vue({
 				return Object.values(sortingIndexes).every(sortingOption => {
 					return sortingOption.includes(index);
 				});
-			});
-			// sort to only include indexes included in every sorting option
+			}); // sort to only include indexes included in every sorting option
 
-			matchedLogIndexes = Array.from(new Set(matchedLogIndexes)).sort((a, b) => a > b);
-			// convert to set and back to array to remove dupes, since sets can't have dupes, and sort
+			matchedLogIndexes = matchedLogIndexes.sort((a, b) => a - b);
 
-			return this.parsedChatLogs = (this.tableDisplayToggle ? this.parsedTableChatLogs : this.savedChatLogs).filter(line => {
-				return matchedLogIndexes.includes((this.tableDisplayToggle ? this.parsedTableChatLogs : this.savedChatLogs).indexOf(line));
+			const knownIndexes = {};
+			const appropriateLogs = this.tableDisplayToggle ? this.parsedTableChatLogs : this.savedChatLogs;
+
+			return this.parsedChatLogs = appropriateLogs.filter(line => {
+				let lineIndex = appropriateLogs.indexOf(line);
+				let indexFound = matchedLogIndexes.includes(lineIndex);
+
+				if (knownIndexes.hasOwnProperty(line)) {
+					lineIndex = appropriateLogs.indexOf(line, knownIndexes[line] + 1);
+					// grab the same line but with the offset from finding it the previous time
+					indexFound = matchedLogIndexes.includes(lineIndex);
+					// re-evaluate if index is to be included
+				}
+
+				if (indexFound || knownIndexes.hasOwnProperty(line)) knownIndexes[line] = lineIndex;
+
+				const outOfBoundsIndex = (indexFound && lineIndex < matchedLogIndexes[0])
+				|| (indexFound && lineIndex > matchedLogIndexes[matchedLogIndexes.length - 1]);
+				// same message, different index (e.g. player writing the same thing on different days)
+
+				if (!indexFound) {
+					return false;
+				}
+				else if (outOfBoundsIndex) {
+					return false;
+				}
+				else {
+					return true;
+				}
 			});
 		},
 
