@@ -195,7 +195,7 @@ label[for="wipe-toggle"], label[for="table-display-toggle"] {
 }
 
 .highlight-player {
-	background-color: #474700;
+	background-color: #333333;
 }
 
 .highlight-search {
@@ -241,7 +241,7 @@ label[for="wipe-toggle"], label[for="table-display-toggle"] {
 
 .mind-link {
 	/* color: #5100FF; < actual color from forum report logs */
-	color: #5137FF; /* lighter for easier readability */
+	color: #6A5BD6; /* lighter for easier readability */
 }
 
 .attack {

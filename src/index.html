@@ -185,14 +185,20 @@
 
 			<div id="player-journals-wrapper">
 				<div id="left-side-journal">
-					<p class="journal-placeholder" v-if="!selectedPlayerJournal">Click on a player in the Match info to the left to display the Journal!</p>
+					<p class="journal-placeholder" v-if="!selectedPlayerJournal">
+						Click on a player in the Match info to the left to display the Journal!
+						(Whether or not a journal can be displayed depends on if it's shipped in the report data, thus the display may not always work)
+					</p>
 					<div v-if="selectedPlayerJournal">
 						<!-- The above div prevents the Utility from crashing at boot when match info has not been parsed yet -->
 						<p v-for="line in parsedMatchInfo.find(player => player.pid === selectedPlayerJournal).lastJournalLeft">{{ line }}</p>
 					</div>
 				</div>
 				<div id="right-side-journal">
-					<p class="journal-placeholder" v-if="!selectedPlayerJournal">Click on a player in the match info to the left to display their Journal!</p>
+					<p class="journal-placeholder" v-if="!selectedPlayerJournal">
+						Click on a player in the match info to the left to display their Journal!
+						(Whether or not a journal can be displayed depends on if it's shipped in the report data, thus the display may not always work)
+					</p>
 					<div v-if="selectedPlayerJournal">
 						<!-- The above div prevents the Utility from crashing at boot when match info has not been parsed yet -->
 						<p v-for="line in parsedMatchInfo.find(player => player.pid === selectedPlayerJournal).lastJournalRight">{{ line }}</p>
