@@ -154,9 +154,9 @@
 						<p v-for="log in parsedChatLogs" :id="`log-line-${parsedChatLogs.indexOf(log)+1}`" :class="[checkType(log), extraStylingCheck(log)]"> {{ log }}</p>
 					</div>
 					<table v-if="tableDisplayToggle">
-						<tr v-for="log in parsedChatLogs" :id="`log-line-${parsedChatLogs.indexOf(log)+1}`" :class="[checkType(log.meta), extraStylingCheck(log.meta)]">
-							<td :class="[extraStylingCheck(log.meta)]"> {{ log.meta }} </td>
-							<td :class="[extraStylingCheck(log.content)]"> {{ log.content }} </td>
+						<tr v-for="log in parsedChatLogs" :id="`log-line-${parsedChatLogs.indexOf(log)+1}`" :class="[checkType(log.origin), extraStylingCheck(log.origin)]">
+							<td :class="[extraStylingCheck(log.origin)]"> {{ log.meta }} </td>
+							<td :class="[extraStylingCheck(log.origin)]"> {{ log.content }} </td>
 						</tr>
 					</table>
 				</div>
