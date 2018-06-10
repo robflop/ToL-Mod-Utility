@@ -73,12 +73,17 @@ label[for="wipe-toggle"], label[for="table-display-toggle"] {
 	grid-area: matchinfo-logs;
 }
 
-.playerAccountName {
+.player-account-name {
 	color: #00FFFF;
 }
 
-.selectedJournalInfo {
+.selected-journal-info {
 	color: #fd0a0a;
+}
+
+.journal-placeholder {
+	color: orange;
+	text-align: center;
 }
 
 #input-wrapper, #match-info-wrapper {
@@ -151,7 +156,7 @@ label[for="wipe-toggle"], label[for="table-display-toggle"] {
 	overflow-y: auto;
 }
 
-#left-side-journal > div > p, #right-side-journal > div > p {
+#left-side-journal p, #right-side-journal p {
 	margin: 10px;
 }
 

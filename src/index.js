@@ -54,8 +54,8 @@ const app = new Vue({
 				player.lastJournalLeft = player.lastJournalLeft.split('\n').filter(line => line !== '').map(line => line.trim());
 				player.lastJournalRight = player.lastJournalRight.split('\n').filter(line => line !== '').map(line => line.trim());
 			});
-			this.parsedChatLogs = this.chatLogsInput.split('[,]').filter(line => line !== '')
 
+			this.parsedChatLogs = this.chatLogsInput.split('[,]').filter(line => line !== '')
 			// Character sequence in above split is line seperator, filter used to remove empty lines
 				.map(line => {
 					line = line.trim();
@@ -122,7 +122,7 @@ const app = new Vue({
 					if (log.toLowerCase().includes(this.searchInput.toLowerCase())) searchHit = true;
 				}
 				else if (this.regexSearchToggle) {
-					if (log.match(this.searchInput)) searchHit = true;
+					if (this.searchInput.test(log)) searchHit = true;
 				}
 				else if (this.entireWordsSearchToggle) {
 					if (this.searchInput.split(' ').every(searchWord => log.split(' ').includes(searchWord))) searchHit = true;
@@ -201,8 +201,6 @@ const app = new Vue({
 		},
 
 		filter() {
-			let chatLogs = this.savedChatLogs;
-			// Base (unmodified) logs
 			let matchedLogIndices = Array.from(this.savedChatLogs.keys());
 			// Make an array with all chatlog entry indices to later sort out
 			const sortingIndices = {};
@@ -225,43 +223,56 @@ const app = new Vue({
 			} // Display error info if both day and night were filtered by, because that doesn't make sense
 
 			if (this.selectedType !== 'All') {
+				const typeHits = [];
+
 				if (this.selectedType === 'Whisper') {
 					// Whispers are special because they don't follow the format of other types
 					const whisperRegex = /From [\w\s]+ \[\d+] \([\w\s]+\):/;
 
-					chatLogs = chatLogs.filter(line => {
-						return whisperRegex.test(line) || line.startsWith('(Day)') || line.startsWith('(Win)');
+					this.savedChatLogs.forEach((line, index) => {
+						if (whisperRegex.test(line) || line.startsWith('(Day)') || line.startsWith('(Win)')) {
+							return typeHits.push(index);
+						}
+						else {
+							return null;
+						}
 					});
 				}
 				else {
-					chatLogs = chatLogs.filter(line => {
-						return line.startsWith(`(${this.selectedType}`) || line.startsWith('(Day)') || line.startsWith('(Win)');
-						// Fyi to future self, the missing closing bracket in the type check is intended
+					this.savedChatLogs.forEach((line, index) => {
+						if (line.startsWith(`(${this.selectedType}`) || line.startsWith('(Day)') || line.startsWith('(Win)')) {
+							return typeHits.push(index);
+						} // Fyi to future self, the missing closing bracket in the type check is intended
+						else {
+							return null;
+						}
 					});
 				}
 
-				sortingIndices.typeIndices = chatLogs.map(line => line = this.savedChatLogs.indexOf(line));
+				sortingIndices.typeIndices = typeHits;
 			}
 
 			if (this.filteredPlayers.length) {
-				chatLogs = chatLogs.filter(line => {
-					let hit = false;
+				const playerHits = [];
 
-					if (this.filteredPlayers.some(player => line.includes(player))) hit = true;
-					if (line.startsWith('(Day)') || line.startsWith('(Win)')) hit = true;
-
-					return hit;
+				this.savedChatLogs.forEach((line, index) => {
+					if (this.filteredPlayers.some(player => line.includes(player)) || line.startsWith('(Day)') || line.startsWith('(Win)')) {
+						return playerHits.push(index);
+					}
+					else {
+						return null;
+					}
 				});
 
-				sortingIndices.playerIndices = chatLogs.map(line => line = this.savedChatLogs.indexOf(line));
+				sortingIndices.playerIndices = playerHits;
 			}
 
 			if (this.selectedDay !== 'All') {
-				const start = chatLogs.indexOf(`(Day) ${this.selectedDay}`);
-				let end = chatLogs.indexOf(`(Day) Night ${parseInt(this.selectedDay.replace('Day', ''))}`);
+				const start = this.savedChatLogs.indexOf(`(Day) ${this.selectedDay}`);
+				let end = this.savedChatLogs.indexOf(`(Day) Night ${parseInt(this.selectedDay.replace('Day', ''))}`);
 				// Last line of the day is the first line of the following night
 
-				if (parseInt(this.selectedDay.replace('Day', '')) === this.days) end = chatLogs.length;
+				if (parseInt(this.selectedDay.replace('Day', '')) === this.days) end = this.savedChatLogs.length;
 				// For last day since there isn't a night following it to detect
 
 				sortingIndices.dayIndices = Array.from({ length: end - (start - 1) }, (v, i) => i + start);
@@ -269,14 +280,9 @@ const app = new Vue({
 			}
 
 			if (this.selectedNight !== 'All') {
-				const start = chatLogs.indexOf(`(Day) ${this.selectedNight}`);
-				const end = chatLogs.indexOf(`(Day) Day ${parseInt(this.selectedNight.replace('Night', '')) + 1}`);
+				const start = this.savedChatLogs.indexOf(`(Day) ${this.selectedNight}`);
+				const end = this.savedChatLogs.indexOf(`(Day) Day ${parseInt(this.selectedNight.replace('Night', '')) + 1}`);
 				// Last line of the night is the first line of the following day
-
-				chatLogs = chatLogs.filter((line, index) => {
-					if (index >= start && index <= end) return true;
-					else return false;
-				});
 
 				sortingIndices.nightIndices = Array.from({ length: end - (start - 1) }, (v, i) => i + start);
 			}

@@ -133,29 +133,29 @@
 				<div id="match-info-wrapper">
 					<ol> 
 						<li v-for="player in parsedMatchInfo" :id="`player-${player.pid}`" @click="selectedPlayerJournal = player.pid">
-							<span class="playerIngameName">{{ player.ign }}</span>
-							<span class="playerAccount">
-								(<span class="playerAccountName">{{ player.dName }}</span>, <span class="playerAccountID">{{ player.pid }}</span>):
+							<span class="player-ingame-name">{{ player.ign }}</span>
+							<span class="player-account">
+								(<span class="player-account-name">{{ player.dName }}</span>, <span class="player-account-id">{{ player.pid }}</span>):
 							</span>
-							<span class="playerStartInfo" :class="checkFaction(player.startFaction)">{{ player.startClass }} ({{ player.startFaction }})</span>
+							<span class="player-start-info" :class="checkFaction(player.startFaction)">{{ player.startClass }} ({{ player.startFaction }})</span>
 							<span>→</span> <!-- lone arrow in span because i don't want it colored, and putting it without a span would look weird in syntax -->
-							<span class="playerEndInfo" :class="checkFaction(player.endFaction)">{{ player.endClass }} ({{ player.endFaction }}).</span>
+							<span class="player-end-info" :class="checkFaction(player.endFaction)">{{ player.endClass }} ({{ player.endFaction }}).</span>
 							<br>
-							<span class="playerGameResult" :class="player.won ? 'won' : 'lost'">Won? {{ player.won }}.</span>
-							<span class="playerConnectionStatus" :class="checkConnection(player.pConInt)">Connection Status: {{ connectionStatuses[player.pConInt] }}.</span>
-							<span class="selectedJournalInfo" v-show="selectedPlayerJournal === player.pid">Player Journal currently displayed on the right.</span>
+							<span class="player-game-result" :class="player.won ? 'won' : 'lost'">Won? {{ player.won }}.</span>
+							<span class="player-connection-status" :class="checkConnection(player.pConInt)">Connection Status: {{ connectionStatuses[player.pConInt] }}.</span>
+							<span class="selected-journal-info" v-show="selectedPlayerJournal === player.pid">Player Journal currently displayed on the right.</span>
 						</li>
 					</ol>
 				</div>
 			
 				<div id="chat-log-wrapper">
 					<div v-if="!tableDisplayToggle">
-						<p v-for="log in parsedChatLogs" :id="`log-line-${parsedChatLogs.indexOf(log)+1}`" :class="[checkType(log), extraStylingCheck(log)]"> {{ log }}</p>
+						<p v-for="log in parsedChatLogs" :id="`log-line-${parsedChatLogs.indexOf(log)+1}`" :class="[checkType(log), extraStylingCheck(log)]">{{ log }}</p>
 					</div>
 					<table v-if="tableDisplayToggle">
 						<tr v-for="log in parsedChatLogs" :id="`log-line-${parsedChatLogs.indexOf(log)+1}`" :class="[checkType(log.origin), extraStylingCheck(log.origin)]">
-							<td :class="[extraStylingCheck(log.origin)]"> {{ log.meta }} </td>
-							<td :class="[extraStylingCheck(log.origin)]"> {{ log.content }} </td>
+							<td :class="[extraStylingCheck(log.origin)]">{{ log.meta }}</td>
+							<td :class="[extraStylingCheck(log.origin)]">{{ log.content }}</td>
 						</tr>
 					</table>
 				</div>
@@ -163,15 +163,17 @@
 
 			<div id="player-journals-wrapper">
 				<div id="left-side-journal">
+					<p class="journal-placeholder" v-if="!selectedPlayerJournal">Click on a player in the Match info to the left to display the Journal!</p>
 					<div v-if="selectedPlayerJournal">
 						<!-- The above div prevents the Utility from crashing at boot when match info has not been parsed yet -->
-						<p v-for="line in parsedMatchInfo.find(player => player.pid === selectedPlayerJournal).lastJournalLeft"> {{ line }}</p>
+						<p v-for="line in parsedMatchInfo.find(player => player.pid === selectedPlayerJournal).lastJournalLeft">{{ line }}</p>
 					</div>
 				</div>
 				<div id="right-side-journal">
+					<p class="journal-placeholder" v-if="!selectedPlayerJournal">Click on a player in the match info to the left to display their Journal!</p>
 					<div v-if="selectedPlayerJournal">
 						<!-- The above div prevents the Utility from crashing at boot when match info has not been parsed yet -->
-						<p v-for="line in parsedMatchInfo.find(player => player.pid === selectedPlayerJournal).lastJournalRight"> {{ line }}</p>
+						<p v-for="line in parsedMatchInfo.find(player => player.pid === selectedPlayerJournal).lastJournalRight">{{ line }}</p>
 					</div>
 				</div>
 			</div>
