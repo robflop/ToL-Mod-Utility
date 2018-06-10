@@ -78,7 +78,10 @@
 						
 							<label for="seperators-toggle">Line seperators: </label>
 							<input id="seperators-toggle" type="checkbox" v-model.trim="seperatorsToggle" :disabled="!isLoaded">
-						</div>
+
+							<label for="color-strip-toggle">Color strip:</label>
+							<input id="color-strip-toggle" type="checkbox" v-model.trim="colorStripToggle" :disabled="!isLoaded">
+						</div>	
 					
 						<div id="player-options" v-show="view === 'playerOptions'">
 							<span id="highlight-player-span">H</span>
