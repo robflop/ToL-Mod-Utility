@@ -88,7 +88,8 @@ const app = new Vue({
 						const playerEntry = this.parsedMatchInfo.find(p => p.dName === player.dName);
 
 						playerEntry.ign = playerInfo[1];
-						playerEntry.piIndex = playerInfo[2];
+						playerEntry.piIndex = playerInfo[2] - 1;
+						// Minus one because of zero-indexing
 						playerEntry.startClass = playerInfo[3];
 						// Fill out some of the basic info missing in the supplied match info
 
