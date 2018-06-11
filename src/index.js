@@ -49,8 +49,6 @@ const app = new Vue({
 				.map(player => player.leftGameReason === 'Reconnected' ? player.pConInt = 4 : null);
 			// Sort by piIndex and adjust connection status for reconnection
 
-			// this.parsedMatchInfo = this.parsedMatchInfo.filter(player => player.piIndex !== -1);
-			// ABOVE DISABLED BECAUSE BROKEN; filter out players that didn't load into the game (piIndex === -1)
 			this.parsedMatchInfo.map(player => { // eslint-disable-line array-callback-return
 				player.lastJournalLeft = player.lastJournalLeft.split('\n').filter(line => line !== '').map(line => line.trim());
 				player.lastJournalRight = player.lastJournalRight.split('\n').filter(line => line !== '').map(line => line.trim());
@@ -73,6 +71,20 @@ const app = new Vue({
 					// Check lines for formatting tags like "<i>..</i>" etc and remove them
 					return line;
 				});
+
+			const loadingUnclear = this.parsedMatchInfo.filter(player => player.piIndex === -1);
+			// piIndex -1 stands for "player didn't load into the game", but is unclear because sometimes they still do
+
+			loadingUnclear.forEach(player => {
+				if (this.parsedChatLogs.some(line => line.includes(player.dName))) return player.loadError = false;
+				else return player.loadError = true;
+			}); // if anything ingame ever is about/with them, we can assume they did load in, if not they didn't load
+
+			this.parsedMatchInfo = this.parsedMatchInfo.filter(player => {
+				const unclearPlayer = loadingUnclear.find(p => p.pid === player.pid);
+				if (unclearPlayer && unclearPlayer.loadError) return false;
+				else return true;
+			});
 
 			this.parsedTableChatLogs = this.parsedChatLogs.map(line => {
 				const lineParts = line.startsWith('From') // Only Whispers start like this and have multiple colons
