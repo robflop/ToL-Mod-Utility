@@ -76,9 +76,28 @@ const app = new Vue({
 			// piIndex -1 stands for "player didn't load into the game", but is unclear because sometimes they still do
 
 			loadingUnclear.forEach(player => {
-				if (this.parsedChatLogs.some(line => line.includes(player.dName))) return player.loadError = false;
-				else return player.loadError = true;
-			}); // if anything ingame ever is about/with them, we can assume they did load in, if not they didn't load
+				const playerLine = this.parsedChatLogs.find(line => line.includes(player.dName));
+				if (playerLine) {
+					if (playerLine.startsWith('From')) {
+						// Whispers are too annoying to analyze
+						return player.loadError = false;
+					}
+					else {
+						const playerInfo = playerLine.match(/\(\w+\)\s([\w+\s]*)\s(\[\d+\])\s\([\w+\s]*-\s([\w\s]+)\)/);
+						const playerEntry = this.parsedMatchInfo.find(p => p.dName === player.dName);
+
+						playerEntry.ign = playerInfo[1];
+						playerEntry.piIndex = playerInfo[2];
+						playerEntry.startClass = playerInfo[3];
+						// Fill out some of the basic info missing in the supplied match info
+
+						return player.loadError = false;
+					}
+				}
+				else {
+					return player.loadError = true;
+				}
+			}); // If anything ingame ever is about/with them, we can assume they did load in, if not they didn't load
 
 			this.parsedMatchInfo = this.parsedMatchInfo.filter(player => {
 				const unclearPlayer = loadingUnclear.find(p => p.pid === player.pid);
