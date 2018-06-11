@@ -83,7 +83,8 @@ const app = new Vue({
 						return player.loadError = false;
 					}
 					else {
-						const playerInfo = playerLine.match(/\(\w+\)\s([\w+\s]*)\s(\[\d+\])\s\([\w+\s]*-\s([\w\s]+)\)/);
+						const playerInfoRegex = /(?:\([\w+\s]*?to)?\s([\w+\s]+)\s\[(\d+)\]\s\([\w+\s]+-\s([\w\s]+)\)/;
+						const playerInfo = playerLine.match(playerInfoRegex);
 						const playerEntry = this.parsedMatchInfo.find(p => p.dName === player.dName);
 
 						playerEntry.ign = playerInfo[1];
