@@ -125,23 +125,23 @@
 								<input id="regex-search-toggle" type="checkbox" v-model="regexSearchToggle" @change="searchHits = []; currentHit = jumpToHit = 1; regexFlags = [];">
 								<div id="regex-flags-wrapper">
 									<div class="regex-flags">
-										<label for="regex-flag-g">G</label>
+										<label for="regex-flag-g" title="Global search">G</label>
 										<input id="regex-flag-g" type="checkbox" value="g" v-model="regexFlags" :disabled="!regexSearchToggle" @change="searchHits = []; currentHit = jumpToHit = 1;">
 									</div>
 									<div class="regex-flags">
-										<label for="regex-flag-i">I</label>
+										<label for="regex-flag-i" title="Case-insensitive search">I</label>
 										<input id="regex-flag-i" type="checkbox" value="i" v-model="regexFlags" :disabled="!regexSearchToggle" @change="searchHits = []; currentHit = jumpToHit = 1;">
 									</div>
 									<div class="regex-flags">
-										<label for="regex-flag-m">M</label>
+										<label for="regex-flag-m" title="Multi-line search">M</label>
 										<input id="regex-flag-m" type="checkbox" value="m" v-model="regexFlags" :disabled="!regexSearchToggle" @change="searchHits = []; currentHit = jumpToHit = 1;">
 									</div>
 									<div class="regex-flags">
-										<label for="regex-flag-u">U</label>
+										<label for="regex-flag-u" title="Unicode sequence search">U</label>
 										<input id="regex-flag-u" type="checkbox" value="u" v-model="regexFlags" :disabled="!regexSearchToggle" @change="searchHits = []; currentHit = jumpToHit = 1;">
 									</div>
 									<div class="regex-flags">
-										<label for="regex-flag-y">Y</label>
+										<label for="regex-flag-y" title="Sticky search">Y</label>
 										<input id="regex-flag-y" type="checkbox" value="y" v-model="regexFlags" :disabled="!regexSearchToggle" @change="searchHits = []; currentHit = jumpToHit = 1;">
 									</div>
 								</div>
