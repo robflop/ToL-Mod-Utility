@@ -96,9 +96,9 @@
 							<div id="player-options-container">
 								<form method="post">
 									<div v-for="player in parsedMatchInfo">
-										<input type="checkbox" :id="`${player.ign}-highlight`" :value="`${player.ign} [${player.piIndex + 1}]`"
+										<input type="checkbox" :id="`${player.ign}-highlight`" :value="`${player.ign} [${parseInt(player.piIndex) + 1}]`"
 										v-model="highlightedPlayers" :disabled="!isLoaded">
-										<input type="checkbox" :id="`${player.ign}-filter`" :value="`${player.ign} [${player.piIndex + 1}]`"
+										<input type="checkbox" :id="`${player.ign}-filter`" :value="`${player.ign} [${parseInt(player.piIndex) + 1}]`"
 										v-model="filteredPlayers" @change="filter" :disabled="!isLoaded">
 										<label :for="`${player.ign}-filter`">
 											<span class="player-filter-ign">{{ player.ign }}</span>
