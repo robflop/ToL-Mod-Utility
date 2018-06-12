@@ -83,15 +83,17 @@ const app = new Vue({
 						return player.loadError = false;
 					}
 					else {
-						const playerInfoRegex = /(?:\([\w+\s]*?to)?\s([\w+\s]+)\s\[(\d+)\]\s\([\w+\s]+-\s([\w\s]+)\)/;
+						const playerInfoRegex = /(?:\([\w+\s]*?to)?\s([\w+\s]+)\s\[(\d+)\]\s\([\w+\s()]+-\s([\w\s]+)\)/;
 						const playerInfo = playerLine.match(playerInfoRegex);
 						const playerEntry = this.parsedMatchInfo.find(p => p.dName === player.dName);
 
-						playerEntry.ign = playerInfo[1];
-						playerEntry.piIndex = playerInfo[2] - 1;
-						// Minus one because of zero-indexing
-						playerEntry.startClass = playerInfo[3];
-						// Fill out some of the basic info missing in the supplied match info
+						if (playerInfo) {
+							playerEntry.ign = playerInfo[1];
+							playerEntry.piIndex = playerInfo[2] - 1;
+							// Minus one because of zero-indexing
+							playerEntry.startClass = playerInfo[3];
+							// Fill out some of the basic info missing in the supplied match info
+						}
 
 						return player.loadError = false;
 					}
