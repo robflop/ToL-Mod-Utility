@@ -75,6 +75,10 @@ label[for="wipe-toggle"], label[for="table-display-toggle"] {
 	display: inline-block;
 }
 
+#punishment-prep {
+	margin-top: 15%;
+}
+
 #matchinfo-logs-wrapper {
 	grid-area: matchinfo-logs;
 }

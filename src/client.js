@@ -7,6 +7,7 @@ app.on('ready', () => {
 
 	const mainWindow = new BrowserWindow({ minWidth: 1420, minHeight: 840, webPreferences: { devTools: false }, center: true, show: false });
 	mainWindow.loadURL(`file://${__dirname}/index.html`);
+	mainWindow.loadURL(`file://${__dirname}/html/index.html`);
 	mainWindow.on('ready-to-show', () => {
 		mainWindow.setMenu(null);
 		mainWindow.setSize(1420, 840);
