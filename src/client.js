@@ -5,8 +5,14 @@ app.setAppUserModelId('com.robflop.tol-mod-utility');
 app.on('ready', () => {
 	// require('vue-devtools').install();
 
-	const mainWindow = new BrowserWindow({ minWidth: 1420, minHeight: 840, webPreferences: { devTools: false }, center: true, show: false });
-	mainWindow.loadURL(`file://${__dirname}/index.html`);
+	const mainWindow = new BrowserWindow({
+		minWidth: 1420,
+		minHeight: 840,
+		webPreferences: { devTools: false },
+		center: true,
+		show: false
+	});
+
 	mainWindow.loadURL(`file://${__dirname}/html/index.html`);
 	mainWindow.on('ready-to-show', () => {
 		mainWindow.setMenu(null);
@@ -14,6 +20,8 @@ app.on('ready', () => {
 		mainWindow.setTitle(`${productName} ${version} - ${description}`);
 		mainWindow.show();
 	});
+	mainWindow.on('closed', () => app.quit());
+
 	// mainWindow.webContents.openDevTools();
 });
 
