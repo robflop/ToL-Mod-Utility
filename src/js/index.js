@@ -1,4 +1,5 @@
 const { remote } = require('electron');
+const { productName, version, description } = require('../../package.json');
 
 const app = new Vue({
 	el: '#app',
@@ -392,6 +393,25 @@ const app = new Vue({
 
 			return [line.substring(0, currentIndex - 3), line.substring(currentIndex)];
 			// Minus 3 because the last 3 character are unnecessary whitespace and colons
+		},
+
+		openMeasurePrep() {
+			const measuresWindow = new remote.BrowserWindow({
+				minWidth: 800,
+				minHeight: 400,
+				webPreferences: { devTools: false },
+				center: true,
+				show: false
+			});
+
+			measuresWindow.loadURL(`file://${__dirname}/../html/measures.html`);
+			measuresWindow.on('ready-to-show', () => {
+				measuresWindow.setMenu(null);
+				measuresWindow.setSize(800, 400);
+				measuresWindow.setTitle(`${productName} ${version} - ${description} [Measure Preparation]`);
+				measuresWindow.show();
+			});
+			measuresWindow.webContents.openDevTools();
 		}
 	}
 });

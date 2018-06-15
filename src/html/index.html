@@ -35,7 +35,7 @@
 							<input id="table-display-toggle" type="checkbox" v-model="tableDisplayToggle" v-on="isLoaded ? { change: loadMatch && filter} : {}">
 						</div>
 
-						<button id="punishment-prep" @click.prevent="openPunishmentPrep">Open Punishment preparation</button>
+						<button id="measure-prep" @click.prevent="openMeasurePrep" :disabled="!isLoaded">Open Measure preparation</button>
 					</form>
 				</div>
 			
