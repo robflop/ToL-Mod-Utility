@@ -23,20 +23,6 @@ form select, form input, form label {
 	max-width: 95%;
 }
 
-.regex-flags {
-	display: inline-block;
-	width: 15%;
-	margin: 10px auto;
-}
-
-#player-options input, #player-options label, input[id^="view-"], label[for^="view-"] {
-    display: inline;
-}
-
-ol > li, #player-options {
-	margin: 10px auto;
-}
-
 #app {
 	height: 100vh;
 	display: grid;
@@ -130,8 +116,22 @@ label[for="wipe-toggle"], label[for="table-display-toggle"] {
 	margin-top: 10px;
 }
 
+#player-options input, #player-options label, input[id^="view-"], label[for^="view-"] {
+    display: inline;
+}
+
+ol > li, #player-options {
+	margin: 10px auto;
+}
+
 #search-options {
 	margin-top: 10px;
+}
+
+.regex-flags {
+	display: inline-block;
+	width: 15%;
+	margin: 10px auto;
 }
 
 #highlight-player-span {
