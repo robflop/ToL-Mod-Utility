@@ -28,3 +28,13 @@ form select, form input, form label {
 	background-color: #222;
 	color: #ddd;
 }
+
+#not-loaded-error {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: 430px;
+	font-size: 50px;
+	text-align: center;
+}
