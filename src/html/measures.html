@@ -13,7 +13,7 @@
 				<form id="input" method="post">
 					<label for="player-select">Select a player: </label>
 					<select id="player-select" v-model="selectedPlayer" @change="assembleCommand">
-						<option v-for="player in parsedMatchInfo">{{ player.ign }} ({{ player.dName }}, {{ player.pid }})</option>
+						<option v-for="player in parsedMatchInfo" value="player.pid">{{ player.ign }} ({{ player.dName }}, {{ player.pid }})</option>
 					</select>
 				
 					<label for="measure-select">Select a measure: </label>
@@ -39,7 +39,7 @@
 			</div>
 
 			<div id="command-output-wrapper" v-if="isLoaded">
-				<p id="command-output">{{ measureCommand }}</p>
+				<p id="command-output">{{ assembledCommand }}</p>
 			</div>
 
 			<div style="color:red;">

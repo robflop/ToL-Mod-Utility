@@ -1,4 +1,4 @@
-const { remote } = require('electron');
+const { remote, ipcRenderer } = require('electron');
 const { productName, version, description } = require('../../package.json');
 
 const app = new Vue({
@@ -406,6 +406,8 @@ const app = new Vue({
 
 			measuresWindow.loadURL(`file://${__dirname}/../html/measures.html`);
 			measuresWindow.on('ready-to-show', () => {
+				measuresWindow.webContents.send('measures-open', [this.parsedMatchInfo, this.isLoaded]);
+				// Send match data to the measures window when it opens
 				measuresWindow.setMenu(null);
 				measuresWindow.setSize(800, 400);
 				measuresWindow.setTitle(`${productName} ${version} - ${description} [Measure Preparation]`);
