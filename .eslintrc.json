@@ -47,7 +47,7 @@
 		"no-unmodified-loop-condition": "error",
 		"no-useless-call": "error",
 		"no-useless-concat": "error",
-		"no-useless-escape": "error",
+		"no-useless-escape": "off",
 		"no-useless-return": "error",
 		"no-void": "error",
 		"no-warning-comments": "warn",

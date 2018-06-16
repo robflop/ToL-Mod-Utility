@@ -82,14 +82,19 @@ const app = new Vue({
 			// piIndex -1 stands for "player didn't load into the game", but is unclear because sometimes they still do
 
 			loadingUnclear.forEach(player => {
-				const playerLine = this.parsedChatLogs.find(line => line.includes(player.dName));
+				const easyDName = player.dName.replace(/["!{}=,\[\]\?\(\)]*/g, '').trim();
+				// Take special characters out of the player's account name for ease of use
+				const extraChars = player.dName === easyDName ? '' : '.+';
+				// If dName had special characters, match more characters after their easified one, and if not don't match more
+				// eslint-disable-next-line max-len
+				const playerInfoRegex = new RegExp(`(?:\\([\\w+\\s]*?to)?\\s([\\w+\\s]+)\\s\\[(\\d+)\\]\\s\\((${easyDName}${extraChars})\\s-\\s([\\w\\s]+)\\)\\)?`);
+				const playerLine = this.parsedChatLogs.find(line => playerInfoRegex.test(line));
 				if (playerLine) {
 					if (playerLine.startsWith('From')) {
 						// Whispers are too annoying to analyze
 						return player.loadError = false;
 					}
 					else {
-						const playerInfoRegex = /(?:\([\w+\s]*?to)?\s([\w+\s]+)\s\[(\d+)\]\s\([\w+\s()]+-\s([\w\s]+)\)/;
 						const playerInfo = playerLine.match(playerInfoRegex);
 						const playerEntry = this.parsedMatchInfo.find(p => p.dName === player.dName);
 
@@ -97,7 +102,9 @@ const app = new Vue({
 							playerEntry.ign = playerInfo[1];
 							playerEntry.piIndex = playerInfo[2] - 1;
 							// Minus one because of zero-indexing
-							playerEntry.startClass = playerInfo[3];
+							playerEntry.dName = playerInfo[3];
+							// For when a player has question marks in their dName, easier than replacing it across all log lines
+							playerEntry.startClass = playerInfo[4];
 							// Fill out some of the basic info missing in the supplied match info
 						}
 
