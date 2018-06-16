@@ -3,8 +3,8 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>ToL Mod Utility</title>
-		<link rel="stylesheet" href="./index.css">
-		<script src="https://unpkg.com/vue@2.5.16/dist/vue.min.js"></script>
+		<link rel="stylesheet" href="../css/index.css">
+		<script src="https://unpkg.com/vue@2.5.16/dist/vue.js"></script>
 	</head>
 
 	<body>
@@ -21,6 +21,10 @@
 						<input id="input-load" type="submit" value="Load Match" @click.prevent="loadMatch()" :disabled="isLoaded">
 						<input id="input-unload" type="submit" value="Unload Match" @click.prevent="unloadMatch()" :disabled="!isLoaded">
 					
+						<div style="color:red;">
+							<span v-if="!chatLogsInput || !matchInfoInput">Enter Match info and Chat logs!</span>
+						</div>
+
 						<div>
 							<label for="wipe-toggle">Wipe Input on Unload?</label>
 							<input id="wipe-toggle" type="checkbox" v-model="unloadWipeToggle">
@@ -31,9 +35,7 @@
 							<input id="table-display-toggle" type="checkbox" v-model="tableDisplayToggle" v-on="isLoaded ? { change: loadMatch && filter} : {}">
 						</div>
 
-						<div style="color:red; margin-top:35px;">
-							<span v-if="!chatLogsInput || !matchInfoInput">Enter Match info and Chat logs!</span>
-						</div>
+						<button id="measure-prep" @click.prevent="openMeasurePrep" :disabled="!isLoaded">Open Measure preparation</button>
 					</form>
 				</div>
 			
@@ -207,6 +209,6 @@
 			</div>
 		</div>
 	
-		<script src="index.js"></script>
+		<script src="../js/index.js"></script>
 	</body>
 </html>
