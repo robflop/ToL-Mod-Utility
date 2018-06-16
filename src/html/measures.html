@@ -11,30 +11,43 @@
 		<div id="app">
 			<div id="input-wrapper" v-if="isLoaded">
 				<form id="input" method="post">
-					<label for="player-select">Select a player: </label>
-					<select id="player-select" v-model="selectedPlayer" @change="assembleCommand">
-						<option v-for="player in parsedMatchInfo" value="player.pid">{{ player.ign }} ({{ player.dName }}, {{ player.pid }})</option>
-					</select>
-				
-					<label for="measure-select">Select a measure: </label>
-					<select id="measure-select" v-model="selectedMeasure" @change="assembleCommand">
-						<option selected>Select a measure</option>
-						<option value="unban">Unban</option>
-						<option value="fyi">FYI</option>
-						<option value="warn">Warning</option>
-						<option value="ban1d">1-Day Ban</option>
-						<option value="ban3d">3-day Ban</option>
-						<option value="ban7d">7-day Ban</option>
-						<option value="ban15d">15-day Ban</option>
-						<option value="ban30d">30-day Ban</option>
-						<option value="ban1y">1-year Ban</option>
-					</select>
+					<div id="measure-player-select">
+						<div>
+							<label for="measure-select">Select a measure: </label>
+							<select id="measure-select" v-model="selectedMeasure" @change="assembleCommand">
+								<option selected value="">Nothing</option>
+								<option value="unban">Unban</option>
+								<option value="fyi">FYI</option>
+								<option value="warn">Warning</option>
+								<option value="ban1d">1-Day Ban</option>
+								<option value="ban3d">3-day Ban</option>
+								<option value="ban7d">7-day Ban</option>
+								<option value="ban15d">15-day Ban</option>
+								<option value="ban30d">30-day Ban</option>
+								<option value="ban1y">1-year Ban</option>
+							</select>
+						</div>
+			
+						<div>
+							<label for="player-select">Select a player: </label>
+							<select id="player-select" v-model="selectedPlayer" @change="assembleCommand">
+								<option selected value="">Noone</option>
+								<option v-for="player in parsedMatchInfo" :value="player.pid">{{ player.ign }} ({{ player.dName }}, {{ player.pid }})</option>
+							</select>
+						</div>
+					</div>
 
-					<label for="report-link">Insert report link:</label>
-					<input id="report-link" type="text" v-model.trim="reportLink" @change="assembleCommand">
-				
-					<label for="measure-reason">Enter measure reason:</label>
-					<input id="measure-reason" type="text" v-model.trim="measureReason" @change="assembleCommand">
+					<div id="thread-reason-input">
+						<div>
+							<label for="report-link">Insert report link:</label>
+							<input id="report-link" type="text" v-model.trim="reportLink" @input="assembleCommand" :disabled="!selectedPlayer || ['', 'fyi', 'unban'].includes(selectedMeasure)">
+						</div>
+			
+						<div>
+							<label for="measure-reason">Enter measure reason:</label>
+							<input id="measure-reason" type="text" v-model.trim="measureReason" @input="assembleCommand" :disabled="!selectedPlayer || !selectedMeasure || (!['', 'fyi', 'unban'].includes(selectedMeasure) && !reportLink)">
+						</div>
+					</div>
 				</form>
 			</div>
 
@@ -43,7 +56,7 @@
 			</div>
 
 			<div style="color:red;">
-				<span id="not-loaded-error" v-if="!isLoaded">Load a match to prepare measures!</span>
+				<span id="not-loaded-error" v-if="!isLoaded">{{ errorMessage }}</span>
 			</div>
 		</div>
 	

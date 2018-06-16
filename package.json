@@ -11,7 +11,7 @@
 		"electron-winstaller": "^2.6.4",
 		"eslint": "^4.19.1",
 		"htmlhint": "^0.9.13",
-		"vue-devtools": "^3.1.9"
+		"vue-devtools": "^4.1.4"
 	},
 	"scripts": {
 		"test": "eslint src && htmlhint",

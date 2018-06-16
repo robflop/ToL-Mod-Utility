@@ -13,20 +13,23 @@ body {
 	font-size: 14px;
 }
 
-form {
-	margin-top: 4vh;
+form select, form input, form label {
+	width: 200px;
 }
 
-form select, form input, form label {
+form input, form select {
 	margin: 10px auto;
-	display: block;
-	max-width: 95%;
+}
+
+form label {
+	margin: 11px auto;
 }
 
 #app {
 	height: 100vh;
 	background-color: #222;
 	color: #ddd;
+	overflow: hidden;
 }
 
 #not-loaded-error {
@@ -37,4 +40,36 @@ form select, form input, form label {
 	width: 430px;
 	font-size: 50px;
 	text-align: center;
+}
+
+#input-wrapper {
+	height: 105px;
+}
+
+#measure-player-select {
+	float: left;
+	margin-left: 35px;
+}
+
+#thread-reason-input {
+	float: right;
+	margin-right: 35px;
+}
+
+#measure-player-select label, #thread-reason-input label {
+	float: left;
+}
+
+#command-output-wrapper {
+	border: solid;
+	border-style: solid;
+	word-break: break-all;
+	margin: 15px;
+	overflow-y: auto;
+	max-height: 75px;
+}
+
+#command-output {
+	text-align: center;
+	margin: 10px;
 }

@@ -142,6 +142,10 @@ const app = new Vue({
 			this.days = this.savedChatLogs.filter(line => /^\(Day\) Day \d+/.test(line)).length;
 			this.nights = this.savedChatLogs.filter(line => /^\(Day\) Night \d+/.test(line)).length;
 
+			const measuresWindow = remote.BrowserWindow.getAllWindows()[1];
+			if (measuresWindow) measuresWindow.webContents.send('match-load', this.parsedMatchInfo);
+			// Send required data to measures window on load if it's opened
+
 			return this.isLoaded = true;
 		},
 
@@ -152,6 +156,10 @@ const app = new Vue({
 			this.days = this.nights = 0;
 			this.view = 'generalConfig';
 			this.clearFilter();
+
+			const measuresWindow = remote.BrowserWindow.getAllWindows()[1];
+			if (measuresWindow) measuresWindow.webContents.send('match-unload', null);
+			// Send instructions to measures window to empty data if it's opened
 
 			return this.isLoaded = false;
 		},
@@ -403,9 +411,13 @@ const app = new Vue({
 		},
 
 		openMeasurePrep() {
+			if (remote.BrowserWindow.getAllWindows().length >= 2) return;
+			// Don't open more than one measure prep window
+
 			const measuresWindow = new remote.BrowserWindow({
-				minWidth: 800,
-				minHeight: 400,
+				width: 940,
+				height: 240,
+				resizable: false,
 				webPreferences: { devTools: false },
 				center: true,
 				show: false
@@ -413,14 +425,13 @@ const app = new Vue({
 
 			measuresWindow.loadURL(`file://${__dirname}/../html/measures.html`);
 			measuresWindow.on('ready-to-show', () => {
-				measuresWindow.webContents.send('measures-open', [this.parsedMatchInfo, this.isLoaded]);
+				measuresWindow.webContents.send('match-load', this.parsedMatchInfo);
 				// Send match data to the measures window when it opens
 				measuresWindow.setMenu(null);
-				measuresWindow.setSize(800, 400);
+				measuresWindow.setSize(940, 240);
 				measuresWindow.setTitle(`${productName} ${version} - ${description} [Measure Preparation]`);
 				measuresWindow.show();
 			});
-			measuresWindow.webContents.openDevTools();
 		}
 	}
 });
