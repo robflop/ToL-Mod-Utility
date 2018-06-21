@@ -280,12 +280,7 @@ const app = new Vue({
 		filter() {
 			let matchedLogIndices = Array.from(this.savedChatLogs.keys());
 			// Make an array with all chatlog entry indices to later sort out
-			const sortingIndices = {
-				typeIndices: [],
-				playerIndices: [],
-				dayIndices: [],
-				nightIndices: []
-			};
+			const sortingIndices = {};
 
 			if (this.selectedDay !== 'All' && this.selectedNight !== 'All') {
 				if (!this.tableDisplayToggle) {
@@ -305,13 +300,15 @@ const app = new Vue({
 			} // Display error info if both day and night were filtered by, because that doesn't make sense
 
 			if (this.selectedType !== 'All') {
+				const typeHits = [];
+
 				if (this.selectedType === 'Whisper') {
 					// Whispers are special because they don't follow the format of other types
 					const whisperRegex = /From [\w\s]+ \[\d+] \([\w\s]+\):/;
 
 					this.savedChatLogs.forEach((line, index) => {
 						if (whisperRegex.test(line) || line.startsWith('(Day)') || line.startsWith('(Win)')) {
-							return sortingIndices.typeIndices.push(index);
+							return typeHits.push(index);
 						}
 						else {
 							return null;
@@ -321,24 +318,30 @@ const app = new Vue({
 				else {
 					this.savedChatLogs.forEach((line, index) => {
 						if (line.startsWith(`(${this.selectedType}`) || line.startsWith('(Day)') || line.startsWith('(Win)')) {
-							return sortingIndices.typeIndices.push(index);
+							return typeHits.push(index);
 						} // Fyi to future self, the missing closing bracket in the type check is intended
 						else {
 							return null;
 						}
 					});
 				}
+
+				sortingIndices.typeIndices = typeHits;
 			}
 
 			if (this.filteredPlayers.length) {
+				const playerHits = [];
+
 				this.savedChatLogs.forEach((line, index) => {
 					if (this.filteredPlayers.some(player => line.includes(player)) || line.startsWith('(Day)') || line.startsWith('(Win)')) {
-						return sortingIndices.playerIndices.push(index);
+						return playerHits.push(index);
 					}
 					else {
 						return null;
 					}
 				});
+
+				sortingIndices.playerIndices = playerHits;
 			}
 
 			if (this.selectedDay !== 'All') {
@@ -389,12 +392,8 @@ const app = new Vue({
 				|| (inIndiceRange && lineIndex > matchedLogIndices[matchedLogIndices.length - 1]);
 				// Same message, different index (e.g. player writing the same thing on different days)
 
-				if (!inIndiceRange || outOfBounds) {
-					return false;
-				}
-				else {
-					return true;
-				}
+				if (!inIndiceRange || outOfBounds) return false;
+				else return true;
 			});
 		},
 
