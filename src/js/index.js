@@ -106,8 +106,7 @@ const app = new Vue({
 							playerEntry.dName = playerInfo[3];
 							// For when a player has question marks in their dName, easier than replacing it across all log lines
 							playerEntry.startClass = playerInfo[4];
-							// Fill out some of the basic info missing in the supplied match info
-						}
+						} // Fill out some of the basic info missing in the supplied match info
 
 						return player.loadError = false;
 					}
