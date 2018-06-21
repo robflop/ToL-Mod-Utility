@@ -54,9 +54,9 @@ const app = new Vue({
 			this.parsedMatchInfo
 				.sort((a, b) => a.piIndex - b.piIndex)
 				.map(player => player.leftGameReason === 'Reconnected' ? player.pConInt = 4 : null);
-			// Sort by piIndex and adjust connection status for reconnection
+			// Sort by piIndex and adjust connection status for reconnection -- Ternary used to one-line it
 
-			this.parsedMatchInfo.map(player => { // eslint-disable-line array-callback-return
+			this.parsedMatchInfo.forEach(player => {
 				player.lastJournalLeft = player.lastJournalLeft.split('\n').filter(line => line !== '').map(line => line.trim());
 				player.lastJournalRight = player.lastJournalRight.split('\n').filter(line => line !== '').map(line => line.trim());
 			});
@@ -83,6 +83,7 @@ const app = new Vue({
 			// piIndex -1 stands for "player didn't load into the game", but is unclear because sometimes they still do
 
 			loadingUnclear.forEach(player => {
+				const playerEntry = this.parsedMatchInfo.find(p => p.pid === player.pid);
 				const easyDName = player.dName.replace(/["!{}=,\[\]\?\(\)]*/g, '').trim();
 				// Take special characters out of the player's account name for ease of use
 				const extraChars = player.dName === easyDName ? '' : '.+';
@@ -93,11 +94,10 @@ const app = new Vue({
 				if (playerLine) {
 					if (playerLine.startsWith('From')) {
 						// Whispers are too annoying to analyze
-						return player.loadError = false;
+						return playerEntry.loadError = false;
 					}
 					else {
 						const playerInfo = playerLine.match(playerInfoRegex);
-						const playerEntry = this.parsedMatchInfo.find(p => p.dName === player.dName);
 
 						if (playerInfo) {
 							playerEntry.ign = playerInfo[1];
@@ -108,28 +108,26 @@ const app = new Vue({
 							playerEntry.startClass = playerInfo[4];
 						} // Fill out some of the basic info missing in the supplied match info
 
-						return player.loadError = false;
+						return playerEntry.loadError = false;
 					}
 				}
 				else {
-					return player.loadError = true;
+					return playerEntry.loadError = true;
 				}
 			}); // If anything ingame ever is about/with them, we can assume they did load in, if not they didn't load
 
-			this.parsedMatchInfo = this.parsedMatchInfo.filter(player => {
-				const unclearPlayer = loadingUnclear.find(p => p.pid === player.pid);
-				if (unclearPlayer && unclearPlayer.loadError) return false;
-				else return true;
-			});
+			this.parsedMatchInfo = this.parsedMatchInfo.filter(player => !player.loadError);
+			// Works for players that weren't suspected of not loading and for ones that were falsely suspected
 
 			this.parsedTableChatLogs = this.parsedChatLogs.map(line => {
 				const lineParts = line.startsWith('From') // Only Whispers start like this and have multiple colons
-					? this.splitLine(line)
+					? this.splitWhisper(line)
 					: line.split(':').map(linePart => linePart = linePart.trim());
 
 				if (lineParts[0] && lineParts[1]) lineParts[0] = `${lineParts[0]}:`;
+				// Restore the colon in front of the first part that was cut off when splitting
 
-				return line = { meta: lineParts[0], content: lineParts[1] || '', origin: line };
+				return line = { meta: lineParts[0], content: lineParts[1] || '', original: line };
 				// Split lines in meta info (type, participant, etc), content (actual message) and unmodified line
 			});
 
@@ -205,8 +203,7 @@ const app = new Vue({
 		},
 
 		checkFaction(playerFaction) {
-			const factions = ['unseen', 'cult', 'neutral'];
-			// Blue dragon manually matched below due to reasons also below
+			const factions = ['unseen', 'cult', 'neutral', 'bluedragon'];
 
 			let faction;
 
@@ -216,8 +213,6 @@ const app = new Vue({
 				else return null;
 			});
 
-			if (playerFaction === 'BlueDragon') return faction = 'blue-dragon';
-			// BD isn't seperated by a space, so matching and replacing that to be compliant with css names would be messy
 			return faction;
 		},
 
@@ -286,9 +281,9 @@ const app = new Vue({
 				}
 				else {
 					return this.parsedChatLogs = [
-						{ origin: '', meta: '[Utility Info] Filtering for a specific Night and specific Day at the same time is not possible.' },
-						{ origin: '', meta: '[Utility Info] Please unselect either the Night filter or the Day filter for the filter to function.' },
-						{ origin: '', meta: '[Utility Info] Thank you very much, and apologies for the inconvenience.' }
+						{ original: '', meta: '[Utility Info] Filtering for a specific Night and specific Day at the same time is not possible.' },
+						{ original: '', meta: '[Utility Info] Please unselect either the Night- or the Day filter to restore filter functionality.' },
+						{ original: '', meta: '[Utility Info] Thank you very much, and apologies for the inconvenience.' }
 					];
 				}
 			} // Display error info if both day and night were filtered by, because that doesn't make sense
@@ -405,12 +400,12 @@ const app = new Vue({
 			this.currentHit = this.jumpToHit = 1;
 		},
 
-		splitLine(line) {
+		splitWhisper(line) {
 			let currentIndex = 0;
 
-			for (let i = 0; i < 3; i++) {
-				currentIndex = line.indexOf(':', currentIndex);
-				currentIndex++; // Increment so it's one past the latest match
+			for (let i = 0; i < 3; i++) { // 3 because whispers have 3 colons in total
+				currentIndex = line.indexOf(':', currentIndex) + 1;
+				// Increment by one so it's one past the latest match
 			}
 
 			return [line.substring(0, currentIndex - 3), line.substring(currentIndex)];
