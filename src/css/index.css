@@ -100,11 +100,13 @@ label[for="wipe-toggle"], label[for="table-display-toggle"] {
 
 #chat-log-wrapper span {
 	display: block;
-	margin: 10px 5px;
+	padding: 5px 0;
 }
 
 #chat-log-wrapper table {
 	border-spacing: 5px 5px;
+	border-collapse: collapse;
+	line-height: 24px;
 }
 
 #player-options {
@@ -186,16 +188,20 @@ ol > li, #player-options {
 	line-height: 33px;
 }
 
+#chat-log-wrapper div span:last-child.seperator {
+	border-bottom-style: solid;
+}
+
+#chat-log-wrapper div span:first-child.seperator {
+	border-top-style: solid;
+}
+
 .seperator {
-	border-style: solid hidden;
-	border-color: white;
+	border-top-style: solid;
+	border-color: #3C3C3C;
 }
 
 .seperator-thin {
-	border-width: 1px;
-}
-
-.seperator-thick {
 	border-width: 2px;
 }
 

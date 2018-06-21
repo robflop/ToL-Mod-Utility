@@ -170,8 +170,8 @@ const app = new Vue({
 
 			if (this.seperatorsToggle) {
 				classes.push('seperator');
-				if (['announcement', 'privateannouncement'].includes(this.checkType(log))) classes.push('seperator-thick');
-				else classes.push('seperator-thin');
+				classes.push('seperator-thin');
+				// Seperate classes in case a 2nd seperator type is requested (thicker, thinner, etc)
 			}
 			if (this.highlightedPlayers.length && this.highlightedPlayers.some(player => log.includes(player))) classes.push('highlight-player');
 
