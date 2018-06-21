@@ -180,7 +180,15 @@ const app = new Vue({
 					if (log.toLowerCase().includes(this.searchInput.toLowerCase())) searchHit = true;
 				}
 				else if (this.regexSearchToggle) {
-					const searchRegex = new RegExp(this.searchInput, this.regexFlags.join(''));
+					let searchRegex;
+
+					try {
+						searchRegex = new RegExp(this.searchInput, this.regexFlags.join(''));
+					}
+					catch (e) {
+						null;
+					} // try-catch so the below test method doesn't error due to invalid regex
+
 					if (searchRegex && searchRegex.test(log)) searchHit = true;
 				}
 				else if (this.entireWordsSearchToggle) {
