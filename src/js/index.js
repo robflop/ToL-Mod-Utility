@@ -67,12 +67,10 @@ const app = new Vue({
 				.map(line => {
 					line = line.trim();
 
-					const colorTagStartRegex = /\[color=#[a-fA-F0-9]{6}\]\s?/;
-					const colorTagEndRegex = /\s?\[\/color]/;
+					const colorTagRegex = /\s?\[\/?color(?:=#[a-fA-F0-9]{6})?\]\s?/gm;
 					const formattingTagRegex = /<\/?[bius]>/gm;
 
-					if (colorTagStartRegex.test(line)) line.match(colorTagStartRegex).forEach(match => line = line.replace(match, ''));
-					if (colorTagEndRegex.test(line)) line.match(colorTagEndRegex).forEach(match => line = line.replace(match, ''));
+					if (colorTagRegex.test(line)) line.match(colorTagRegex).forEach(match => line = line.replace(match, ''));
 					// Check log lines for color tags like "[color=#fffff]" and "[/color]", then remove them if found
 					if (formattingTagRegex.test(line)) line.match(formattingTagRegex).forEach(match => line = line.replace(match, ''));
 					// Check lines for formatting tags like "<i>..</i>" etc and remove them
