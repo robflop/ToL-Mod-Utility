@@ -65,16 +65,14 @@ const app = new Vue({
 			// Character sequence in above split is line seperator, filter used to remove empty lines
 			// Replace is used to kill the extra empty lines included in the chat logs from forums
 				.map(line => {
-					line = line.trim();
-
-					const colorTagRegex = /\s?\[\/?color(?:=#[a-fA-F0-9]{6})?\]\s?/gm;
+					const colorTagRegex = /\[\/?color(?:=#[a-fA-F0-9]{6})?\]/gm;
 					const formattingTagRegex = /<\/?[bius]>/gm;
 
 					if (colorTagRegex.test(line)) line.match(colorTagRegex).forEach(match => line = line.replace(match, ''));
 					// Check log lines for color tags like "[color=#fffff]" and "[/color]", then remove them if found
 					if (formattingTagRegex.test(line)) line.match(formattingTagRegex).forEach(match => line = line.replace(match, ''));
 					// Check lines for formatting tags like "<i>..</i>" etc and remove them
-					return line;
+					return line.trim();
 				});
 
 			const loadingUnclear = this.parsedMatchInfo.filter(player => player.piIndex === -1);
