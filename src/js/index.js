@@ -237,13 +237,13 @@ const app = new Vue({ // eslint-disable-line no-undef
 		},
 
 		adjustView(forward, jumpTo) {
-			// Parse int because number input turns out as string
 			if (forward) {
 				if (parseInt(this.currentHit) + 1 > this.searchHits.length) this.currentHit = 1;
 				// Jumping to first match if next number would go out of range
 				else ++this.currentHit;
 			}
-			else if (!forward && forward !== null) { // Not-null check for jumps
+			else if (forward === false) {
+			// Explicit false check because jumping passes "null" which is also falsy
 				if (parseInt(this.currentHit) - 1 < 1) this.currentHit = this.searchHits.length;
 				// Jump to last match if previous number would go negative
 				else --this.currentHit;
@@ -276,7 +276,7 @@ const app = new Vue({ // eslint-disable-line no-undef
 		filter() {
 			let matchedLogIndices = Array.from(this.savedChatLogs.keys());
 			// Make an array with all chatlog entry indices to later sort out
-			const sortingIndices = {};
+			const hitIndices = {};
 
 			if (this.selectedDay !== 'All' && this.selectedNight !== 'All') {
 				if (!this.tableDisplayToggle) {
@@ -316,7 +316,7 @@ const app = new Vue({ // eslint-disable-line no-undef
 					});
 				}
 
-				sortingIndices.typeIndices = typeHits;
+				hitIndices.typeIndices = typeHits;
 			}
 
 			if (this.filteredPlayers.length) {
@@ -326,12 +326,9 @@ const app = new Vue({ // eslint-disable-line no-undef
 					if (this.filteredPlayers.some(player => line.includes(player)) || line.startsWith('(Day)') || line.startsWith('(Win)')) {
 						return playerHits.push(index);
 					}
-					else {
-						return null;
-					}
 				});
 
-				sortingIndices.playerIndices = playerHits;
+				hitIndices.playerIndices = playerHits;
 			}
 
 			if (this.selectedDay !== 'All') {
@@ -342,7 +339,7 @@ const app = new Vue({ // eslint-disable-line no-undef
 				if (parseInt(this.selectedDay.replace('Day', '')) === this.days) end = this.savedChatLogs.length;
 				// For last day since there isn't a night following it to detect
 
-				sortingIndices.dayIndices = Array.from({ length: end - (start - 1) }, (v, i) => i + start);
+				hitIndices.dayIndices = Array.from({ length: end - (start - 1) }, (v, i) => i + start);
 				// Fill the indices array with all indices from start to end, minus one to include last number (end)
 			}
 
@@ -351,16 +348,15 @@ const app = new Vue({ // eslint-disable-line no-undef
 				const end = this.savedChatLogs.indexOf(`(Day) Day ${parseInt(this.selectedNight.replace('Night', '')) + 1}`);
 				// Last line of the night is the first line of the following day
 
-				sortingIndices.nightIndices = Array.from({ length: end - (start - 1) }, (v, i) => i + start);
+				hitIndices.nightIndices = Array.from({ length: end - (start - 1) }, (v, i) => i + start);
 			}
 
 			matchedLogIndices = matchedLogIndices.filter(index => {
-				return Object.values(sortingIndices).every(sortingOption => {
+				return Object.values(hitIndices).every(sortingOption => {
 					return sortingOption.includes(index);
 				});
-			}); // Filter to only include indices included in every chosen sorting option's results
-
-			matchedLogIndices = matchedLogIndices.sort((a, b) => a - b);
+			}).sort((a, b) => a - b);
+			// Filter to only include indices included in every chosen sorting option's results
 
 			const knownIndices = {};
 			const appropriateLogs = this.tableDisplayToggle ? this.parsedTableChatLogs : this.savedChatLogs;
@@ -380,7 +376,7 @@ const app = new Vue({ // eslint-disable-line no-undef
 
 				const outOfBounds = (inIndiceRange && lineIndex < matchedLogIndices[0])
 				|| (inIndiceRange && lineIndex > matchedLogIndices[matchedLogIndices.length - 1]);
-				// Same message, different index (e.g. player writing the same thing on different days)
+				// Same message, different index (e.g. player doing the same thing on different days)
 
 				if (!inIndiceRange || outOfBounds) return false;
 				else return true;
