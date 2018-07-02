@@ -51,16 +51,6 @@ const app = new Vue({ // eslint-disable-line no-undef
 				);
 			}
 
-			this.parsedMatchInfo
-				.sort((a, b) => a.piIndex - b.piIndex)
-				.map(player => player.leftGameReason === 'Reconnected' ? player.pConInt = 4 : null);
-			// Sort by piIndex and adjust connection status for reconnection -- Ternary used to one-line it
-
-			this.parsedMatchInfo.forEach(player => {
-				player.lastJournalLeft = player.lastJournalLeft.split('\n').filter(line => line !== '').map(line => line.trim());
-				player.lastJournalRight = player.lastJournalRight.split('\n').filter(line => line !== '').map(line => line.trim());
-			});
-
 			this.parsedChatLogs = this.chatLogsInput.replace(/(\[,\]\s)(\[,\]\s)/g, '$1').split('[,]')
 			// Character sequence in above split is line seperator, filter used to remove empty lines
 			// Replace is used to kill the extra empty lines included in the chat logs from forums
@@ -74,46 +64,6 @@ const app = new Vue({ // eslint-disable-line no-undef
 					// Check lines for formatting tags like "<i>..</i>" etc and remove them
 					return line.trim();
 				});
-
-			const loadingUnclear = this.parsedMatchInfo.filter(player => player.piIndex === -1);
-			// piIndex -1 stands for "player didn't load into the game", but is unclear because sometimes they still do
-
-			loadingUnclear.forEach(player => {
-				const playerEntry = this.parsedMatchInfo.find(p => p.pid === player.pid);
-				const easyDName = player.dName.replace(/["!{}=,\[\]\?\(\)]*/g, '').trim();
-				// Take special characters out of the player's account name for ease of use
-				const extraChars = player.dName === easyDName ? '' : '.+';
-				// If dName had special characters, match more characters after their easified one, and if not don't match more
-				// eslint-disable-next-line max-len
-				const playerInfoRegex = new RegExp(`(?:\\([\\w+\\s]*?to)?\\s([\\w+\\s]+)\\s\\[(\\d+)\\]\\s\\((${easyDName}${extraChars})\\s-\\s([\\w\\s]+)\\)\\)?`);
-				const playerLine = this.parsedChatLogs.find(line => playerInfoRegex.test(line));
-				if (playerLine) {
-					if (playerLine.startsWith('From')) {
-						// Whispers are too annoying to analyze
-						return playerEntry.loadError = false;
-					}
-					else {
-						const playerInfo = playerLine.match(playerInfoRegex);
-
-						if (playerInfo) {
-							playerEntry.ign = playerInfo[1];
-							playerEntry.piIndex = playerInfo[2] - 1;
-							// Minus one because of zero-indexing
-							playerEntry.dName = playerInfo[3];
-							// For when a player has question marks in their dName, easier than replacing it across all log lines
-							playerEntry.startClass = playerInfo[4];
-						} // Fill out some of the basic info missing in the supplied match info
-
-						return playerEntry.loadError = false;
-					}
-				}
-				else {
-					return playerEntry.loadError = true;
-				}
-			}); // If anything ingame ever is about/with them, we can assume they did load in, if not they didn't load
-
-			this.parsedMatchInfo = this.parsedMatchInfo.filter(player => !player.loadError);
-			// Works for players that weren't suspected of not loading and for ones that were falsely suspected
 
 			this.parsedTableChatLogs = this.parsedChatLogs.map(line => {
 				const lineParts = line.startsWith('From') // Only Whispers start like this and have multiple colons
@@ -134,6 +84,51 @@ const app = new Vue({ // eslint-disable-line no-undef
 
 			this.days = this.savedChatLogs.filter(line => /^\(Day\) Day \d+/.test(line)).length;
 			this.nights = this.savedChatLogs.filter(line => /^\(Day\) Night \d+/.test(line)).length;
+
+			/* ^ Chat logs must be parsed before match info is worked with, so don't move that below ^ */
+
+			this.parsedMatchInfo.reduce((matchInfo, player) => {
+				player.lastJournalLeft = player.lastJournalLeft.split('\n').filter(line => line !== '').map(line => line.trim());
+				player.lastJournalRight = player.lastJournalRight.split('\n').filter(line => line !== '').map(line => line.trim());
+				// Journal adjustment for display later
+
+				if (player.leftGameReason === 'Reconnected') player.pConInt = 4;
+				// Adjust connection status if reconnected
+
+				if (player.piIndex !== -1) return matchInfo.concat(player);
+				// Only process players that may not have loaded
+
+				const easyDName = player.dName.replace(/["!{}=,\[\]\?\(\)]*/g, '').trim();
+				// Special characters in account names cause trouble (log/matchinfo mismatch), so take em out
+				// eslint-disable-next-line max-len
+				const playerInfoRegex = new RegExp(`(?:\\([\\w+\\s]*?to)?\\s([\\w+\\s]+)\\s\\[(\\d+)\\]\\s\\((${easyDName}(?:.+)?)\\s-\\s([\\w\\s]+)\\)\\)?`);
+				const playerLine = this.parsedChatLogs.find(line => playerInfoRegex.test(line));
+
+				if (playerLine) {
+					if (!playerLine.startsWith('From')) {
+						// Whispers are too annoying to analyze, so only doing others
+						const playerInfo = playerLine.match(playerInfoRegex);
+
+						if (playerInfo) {
+							player.ign = playerInfo[1];
+							player.piIndex = playerInfo[2] - 1;
+							// Minus one because of zero-indexing
+							player.dName = playerInfo[3];
+							// For when a player has question marks in their dName, easier than replacing it across all log lines
+							player.startClass = playerInfo[4];
+						} // Fill out some of the basic info missing in the supplied match info
+					}
+					player.loadedIngame = true;
+					return matchInfo.concat(player);
+				}
+				else {
+					// No line match = didn't load, so not added to acc
+					return null;
+				}
+			}, []);
+
+			this.parsedMatchInfo = this.parsedMatchInfo.sort((a, b) => a.piIndex - b.piIndex);
+			// Sort by piIndex for proper listing in filters view
 
 			const measuresWindow = remote.BrowserWindow.getAllWindows()[1];
 			if (measuresWindow) measuresWindow.webContents.send('match-load', this.parsedMatchInfo);
