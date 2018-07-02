@@ -306,9 +306,6 @@ const app = new Vue({ // eslint-disable-line no-undef
 						if (whisperRegex.test(line) || line.startsWith('(Day)') || line.startsWith('(Win)')) {
 							return typeHits.push(index);
 						}
-						else {
-							return null;
-						}
 					});
 				}
 				else {
@@ -316,9 +313,6 @@ const app = new Vue({ // eslint-disable-line no-undef
 						if (line.startsWith(`(${this.selectedType}`) || line.startsWith('(Day)') || line.startsWith('(Win)')) {
 							return typeHits.push(index);
 						} // Fyi to future self, the missing closing bracket in the type check is intended
-						else {
-							return null;
-						}
 					});
 				}
 
