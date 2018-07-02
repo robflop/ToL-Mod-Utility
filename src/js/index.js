@@ -1,7 +1,7 @@
 const { remote } = require('electron');
 const { productName, version, description } = require('../../package.json');
 
-const app = new Vue({
+const app = new Vue({ // eslint-disable-line no-undef
 	el: '#app',
 	data: {
 		isLoaded: false,
