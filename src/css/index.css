@@ -14,7 +14,7 @@ body {
 }
 
 form {
-	margin-top: 1.8vh;
+	margin-top: 0.7vh;
 }
 
 form select, form input, form label {
@@ -127,14 +127,10 @@ ol > li, #player-options {
 	margin: 10px auto;
 }
 
-#search-options {
-	margin-top: 10px;
-}
-
 .regex-flags {
 	display: inline-block;
 	width: 15%;
-	margin: 10px auto;
+	margin: 5px auto;
 }
 
 #highlight-player-span {
