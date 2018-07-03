@@ -87,7 +87,7 @@ const app = new Vue({ // eslint-disable-line no-undef
 
 			/* ^ Chat logs must be parsed before match info is worked with, so don't move that below ^ */
 
-			this.parsedMatchInfo.reduce((matchInfo, player) => {
+			this.parsedMatchInfo = this.parsedMatchInfo.reduce((matchInfo, player) => {
 				player.lastJournalLeft = player.lastJournalLeft.split('\n').filter(line => line !== '').map(line => line.trim());
 				player.lastJournalRight = player.lastJournalRight.split('\n').filter(line => line !== '').map(line => line.trim());
 				// Journal adjustment for display later
@@ -125,10 +125,8 @@ const app = new Vue({ // eslint-disable-line no-undef
 					// No line match = didn't load, so not added to acc (need to return the acc itself though)
 					return matchInfo;
 				}
-			}, []);
-
-			this.parsedMatchInfo = this.parsedMatchInfo.sort((a, b) => a.piIndex - b.piIndex);
-			// Sort by piIndex for proper listing in filters view
+			}, []).sort((a, b) => a.piIndex - b.piIndex);
+			// Sort by piIndex for proper listing in filters view	
 
 			const measuresWindow = remote.BrowserWindow.getAllWindows()[1];
 			if (measuresWindow) measuresWindow.webContents.send('match-load', this.parsedMatchInfo);

@@ -9,7 +9,7 @@
 		"electron": "^2.0.3",
 		"electron-packager": "^12.1.0",
 		"electron-winstaller": "^2.6.4",
-		"eslint": "^4.19.1",
+		"eslint": "^5.0.1",
 		"htmlhint": "^0.9.13",
 		"vue-devtools": "^4.1.4"
 	},
