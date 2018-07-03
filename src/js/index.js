@@ -122,8 +122,8 @@ const app = new Vue({ // eslint-disable-line no-undef
 					return matchInfo.concat(player);
 				}
 				else {
-					// No line match = didn't load, so not added to acc
-					return null;
+					// No line match = didn't load, so not added to acc (need to return the acc itself though)
+					return matchInfo;
 				}
 			}, []);
 
