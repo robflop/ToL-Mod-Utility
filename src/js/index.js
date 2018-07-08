@@ -150,19 +150,38 @@ const app = new Vue({ // eslint-disable-line no-undef
 			return this.isLoaded = true;
 		},
 
-		unloadMatch() {
-			if (this.unloadWipeToggle) this.chatLogsInput = this.matchInfoInput = '';
-			this.selectedPlayerJournal = '';
-			this.parsedMatchInfo = this.parsedChatLogs = this.parsedTableChatLogs = this.savedChatLogs = [];
-			this.days = this.nights = 0;
-			this.view = 'generalConfig';
-			this.clearFilter();
+		checkFaction(playerFaction) {
+			const factions = ['unseen', 'cult', 'neutral', 'bluedragon'];
 
-			const measuresWindow = remote.BrowserWindow.getAllWindows()[1];
-			if (measuresWindow) measuresWindow.webContents.send('match-unload', null);
-			// Send instructions to measures window to empty data if it's opened
+			let faction;
 
-			return this.isLoaded = false;
+			factions.some(fact => {
+				if (playerFaction.replace(/\s+/g, '-').toLowerCase() === fact) return faction = fact;
+				// Replace spaces with dashes because you can't have spaces in css class names
+				else return null;
+			});
+
+			return faction;
+		},
+
+		checkType(log) {
+			if (this.colorStripToggle) return;
+
+			const types = [
+				'day', 'alive', 'system', 'mind-link', 'attack', 'dead',
+				'heal', 'win', 'announcement', 'privateannouncement', 'trollbox'
+			]; // No type for whisper because that's regex'd below due to formatting
+
+			let logType;
+
+			types.some(type => {
+				if (log.toLowerCase().replace(/\s+/g, '-').startsWith(`(${type}`)) return logType = type;
+				// Replace spaces with dashes because can't have spaces in css class names
+				else return null;
+			});
+
+			if (/^From ([\w\s]+) \[\d+\]/.test(log)) return 'whisper';
+			else return logType;
 		},
 
 		extraStylingCheck(log) {
@@ -204,77 +223,6 @@ const app = new Vue({ // eslint-disable-line no-undef
 			}
 
 			return classes;
-		},
-
-		checkFaction(playerFaction) {
-			const factions = ['unseen', 'cult', 'neutral', 'bluedragon'];
-
-			let faction;
-
-			factions.some(fact => {
-				if (playerFaction.replace(/\s+/g, '-').toLowerCase() === fact) return faction = fact;
-				// Replace spaces with dashes because you can't have spaces in css class names
-				else return null;
-			});
-
-			return faction;
-		},
-
-		checkType(log) {
-			if (this.colorStripToggle) return;
-
-			const types = [
-				'day', 'alive', 'system', 'mind-link', 'attack', 'dead',
-				'heal', 'win', 'announcement', 'privateannouncement', 'trollbox'
-			]; // No type for whisper because that's regex'd below due to formatting
-
-			let logType;
-
-			types.some(type => {
-				if (log.toLowerCase().replace(/\s+/g, '-').startsWith(`(${type}`)) return logType = type;
-				// Replace spaces with dashes because can't have spaces in css class names
-				else return null;
-			});
-
-			if (/^From ([\w\s]+) \[\d+\]/.test(log)) return 'whisper';
-			else return logType;
-		},
-
-		adjustView(direction) {
-			if (direction === 'forwards') {
-				if (parseInt(this.currentHit) + 1 > this.searchHits.length) this.currentHit = 1;
-				// Jumping to first match if next number would go out of range
-				else ++this.currentHit;
-			}
-			else if (direction === 'backwards') {
-				if (parseInt(this.currentHit) - 1 < 1) this.currentHit = this.searchHits.length;
-				// Jump to last match if previous number would go negative
-				else --this.currentHit;
-			}
-			else if (direction === 'jump') {
-				if (this.jumpToHit > this.searchHits.length) {
-					this.jumpToHit = this.currentHit = this.searchHits.length;
-					// If trying to jump out of range set to last hit
-				}
-				if (this.jumpToHit < 1) {
-					this.jumpToHit = this.currentHit = 1;
-					// Prevent jumps to negative numbers
-				}
-				if (this.jumpToHit <= this.searchHits.length) {
-					this.currentHit = this.jumpToHit;
-				}
-			}
-
-			if (window.location.href.includes('log-line')) {
-				if (window.location.href.includes('log-line--1')) {
-					return window.location.href = window.location.href.replace('#log-line--1', `#${this.searchHits[this.currentHit - 1]}`);
-				}
-				return window.location.href = window.location.href.replace(/#log-line-\d+/, `#${this.searchHits[this.currentHit - 1]}`);
-			}
-			else {
-				if (this.currentHit - 1 < 0) return window.location.href += `#${this.searchHits[0]}`;
-				else return window.location.href += `#${this.searchHits[this.currentHit - 1]}`;
-			} // Substracting 1 from the selection cuz of zero-basing on array indices, first hit would be the second in the searchHits list otherwise
 		},
 
 		filter() {
@@ -387,6 +335,43 @@ const app = new Vue({ // eslint-disable-line no-undef
 			});
 		},
 
+		adjustView(direction) {
+			if (direction === 'forwards') {
+				if (parseInt(this.currentHit) + 1 > this.searchHits.length) this.currentHit = 1;
+				// Jumping to first match if next number would go out of range
+				else ++this.currentHit;
+			}
+			else if (direction === 'backwards') {
+				if (parseInt(this.currentHit) - 1 < 1) this.currentHit = this.searchHits.length;
+				// Jump to last match if previous number would go negative
+				else --this.currentHit;
+			}
+			else if (direction === 'jump') {
+				if (this.jumpToHit > this.searchHits.length) {
+					this.jumpToHit = this.currentHit = this.searchHits.length;
+					// If trying to jump out of range set to last hit
+				}
+				if (this.jumpToHit < 1) {
+					this.jumpToHit = this.currentHit = 1;
+					// Prevent jumps to negative numbers
+				}
+				if (this.jumpToHit <= this.searchHits.length) {
+					this.currentHit = this.jumpToHit;
+				}
+			}
+
+			if (window.location.href.includes('log-line')) {
+				if (window.location.href.includes('log-line--1')) {
+					window.location.href = window.location.href.replace('#log-line--1', `#${this.searchHits[this.currentHit - 1]}`);
+				}
+				window.location.href = window.location.href.replace(/#log-line-\d+/, `#${this.searchHits[this.currentHit - 1]}`);
+			}
+			else {
+				if (this.currentHit - 1 < 0) return window.location.href += `#${this.searchHits[0]}`;
+				else window.location.href += `#${this.searchHits[this.currentHit - 1]}`;
+			} // Substracting 1 from the selection cuz of zero-basing on array indices, first hit would be the second in the searchHits list otherwise
+		},
+
 		clearFilter() {
 			this.filteredPlayers = this.highlightedPlayers = this.searchHits = [];
 			this.selectedType = this.selectedDay = this.selectedNight = 'All';
@@ -394,8 +379,19 @@ const app = new Vue({ // eslint-disable-line no-undef
 			this.currentHit = this.jumpToHit = 1;
 		},
 
+		unloadMatch() {
+			if (this.unloadWipeToggle) this.chatLogsInput = this.matchInfoInput = '';
+			this.selectedPlayerJournal = '';
+			this.parsedMatchInfo = this.parsedChatLogs = this.parsedTableChatLogs = this.savedChatLogs = [];
+			this.days = this.nights = 0;
+			this.view = 'generalConfig';
+			this.clearFilter();
 
+			const measuresWindow = remote.BrowserWindow.getAllWindows()[1];
+			if (measuresWindow) measuresWindow.webContents.send('match-unload', null);
+			// Send instructions to measures window to empty data if it's opened
 
+			return this.isLoaded = false;
 		},
 
 		openMeasurePrep() {
