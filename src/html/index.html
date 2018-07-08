@@ -174,10 +174,10 @@
 			
 				<div id="chat-log-wrapper">
 					<div v-if="!tableDisplayToggle">
-						<span v-for="log in parsedChatLogs" :id="`log-line-${parsedChatLogs.indexOf(log)+1}`" :class="[checkType(log), extraStylingCheck(log)]">{{ log }}</span>
+						<span v-for="log in parsedChatLogs" :id="`log-line-${parsedChatLogs.indexOf(log) + 1}`" :class="[checkType(log), extraStylingCheck(log)]">{{ log }}</span>
 					</div>
 					<table v-if="tableDisplayToggle">
-						<tr v-for="log in parsedChatLogs" :id="`log-line-${parsedChatLogs.indexOf(log)+1}`" :class="[checkType(log.original), extraStylingCheck(log.original)]">
+						<tr v-for="log in parsedChatLogs" :id="`log-line-${parsedChatLogs.indexOf(log) + 1}`" :class="[checkType(log.original), extraStylingCheck(log.original)]">
 							<td>{{ log.meta }}</td>
 							<td>{{ log.content }}</td>
 						</tr>
