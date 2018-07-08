@@ -152,7 +152,7 @@ const app = new Vue({ // eslint-disable-line no-undef
 
 		extraStylingCheck(log) {
 			const classes = [];
-			const logLine = `log-line-${this.savedChatLogs.indexOf(log)}`;
+			const logLine = `log-line-${this.parsedChatLogs.indexOf(log)}`;
 			let searchHit = false;
 
 			if (this.seperatorsToggle) {
