@@ -1,3 +1,7 @@
+# test data
+/src/info.json
+/src/logs.txt
+
 # Logs
 logs
 *.log

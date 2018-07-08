@@ -9,7 +9,7 @@ const buildOptions = {
 	arch: process.argv[2] || 'ia32',
 	asar: true,
 	icon: './src/icon.ico',
-	ignore: /(buildWin|makeInstallers|vscode|concepts|eslintrc|gitattributes|gitignore|htmlhintrc|travis)/,
+	ignore: /(buildWin|makeInstallers|vscode|concepts|eslintrc|gitattributes|gitignore|htmlhintrc|travis|info|logs)/,
 	out: 'dist/',
 	overwrite: true,
 	prune: true,
