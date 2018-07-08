@@ -156,8 +156,8 @@ const app = new Vue({ // eslint-disable-line no-undef
 			let faction;
 
 			factions.some(fact => {
-				if (playerFaction.replace(/\s+/g, '-').toLowerCase() === fact) return faction = fact;
-				// Replace spaces with dashes because you can't have spaces in css class names
+				if (playerFaction.toLowerCase() === fact) return faction = fact;
+				// Lowercase because css names are lowercase
 				else return null;
 			});
 
