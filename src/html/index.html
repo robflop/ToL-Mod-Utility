@@ -18,8 +18,8 @@
 						<label for="chat-logs">Chat logs: </label>
 						<input id="chat-logs" type="text" v-model.trim="chatLogsInput" :disabled="isLoaded">
 					
-						<input id="input-load" type="submit" value="Load Match" @click.prevent="loadMatch()" :disabled="isLoaded">
-						<input id="input-unload" type="submit" value="Unload Match" @click.prevent="unloadMatch()" :disabled="!isLoaded">
+						<input id="input-load" type="submit" value="Load Match" :disabled="isLoaded" @click.prevent="loadMatch()">
+						<input id="input-unload" type="submit" value="Unload Match" :disabled="!isLoaded" @click.prevent="unloadMatch()">
 					
 						<div style="color:red;">
 							<span v-if="!chatLogsInput || !matchInfoInput">Enter Match info and Chat logs!</span>
@@ -35,7 +35,7 @@
 							<input id="table-display-toggle" type="checkbox" v-model="tableDisplayToggle" v-on="isLoaded ? { change: loadMatch && filter} : {}">
 						</div>
 
-						<button id="measure-prep" @click.prevent="openMeasurePrep" :disabled="!isLoaded">Open Measure preparation</button>
+						<button id="measure-prep" :disabled="!isLoaded" @click.prevent="openMeasurePrep">Open Measure preparation</button>
 					</form>
 				</div>
 			
@@ -56,7 +56,7 @@
 					
 						<div id="general-config" v-show="view === 'generalConfig'">
 							<label for="type-select">Type filter: </label>
-							<select id="type-select" v-model="selectedType" @change="filter" :disabled="!isLoaded">
+							<select id="type-select" v-model="selectedType" :disabled="!isLoaded" @change="filter()">
 								<option selected>All</option>
 								<option>Day</option>
 								<option>Alive</option>
@@ -73,13 +73,13 @@
 							</select>
 						
 							<label for="day-select">Day filter: </label>
-							<select id="day-select" v-model="selectedDay" @change="filter" :disabled="!isLoaded">
+							<select id="day-select" v-model="selectedDay" :disabled="!isLoaded" @change="filter()">
 								<option selected>All</option>
 								<option v-for="day in days">Day {{ day }}</option>
 							</select>
 						
 							<label for="night-select">Night filter: </label>
-							<select id="night-select" v-model="selectedNight" @change="filter" :disabled="!isLoaded">
+							<select id="night-select" v-model="selectedNight" :disabled="!isLoaded" @change="filter()">
 								<option selected>All</option>
 								<option v-for="night in nights">Night {{ night }}</option>
 							</select>
@@ -101,7 +101,7 @@
 										<input type="checkbox" :id="`${player.ign}-highlight`" :value="`${player.ign} [${parseInt(player.piIndex) + 1}]`"
 										v-model="highlightedPlayers" :disabled="!isLoaded">
 										<input type="checkbox" :id="`${player.ign}-filter`" :value="`${player.ign} [${parseInt(player.piIndex) + 1}]`"
-										v-model="filteredPlayers" @change="filter" :disabled="!isLoaded">
+										v-model="filteredPlayers" :disabled="!isLoaded" @change="filter()">
 										<label :for="`${player.ign}-filter`">
 											<span class="player-filter-ign">{{ player.ign }}</span>
 											<span class="player-filter-num">[{{ player.piIndex + 1 }}]</span>
@@ -116,11 +116,11 @@
 								<label for="search-term">Search term/phrase/expr: </label>
 								<input id="search-term" type="search" v-model="searchInput" :disabled="!isLoaded" @input="searchHits = []; currentHit = jumpToHit = 1;">
 								<p>Matches found: {{ searchHits.length }}</p>
-								<button id="search-previous" @click.prevent="adjustView('backwards')" :disabled="!isLoaded || !searchHits.length">&lt;</button>
+								<button id="search-previous" :disabled="!isLoaded || !searchHits.length" @click.prevent="adjustView('backwards')">&lt;</button>
 								<span id="search-current">{{ currentHit }}</span>
-								<button id="search-next" @click.prevent="adjustView('forwards')" :disabled="!isLoaded || !searchHits.length">&gt;</button>
+								<button id="search-next" :disabled="!isLoaded || !searchHits.length" @click.prevent="adjustView('forwards')">&gt;</button>
 								<label for="search-hit-input">Jump to: </label>
-								<input type="number" @input.number="adjustView('jump')" v-model="jumpToHit" step="1" min="1" :max="searchHits.length" :disabled="!isLoaded || !searchHits.length" @submit.prevent>
+								<input type="number" :disabled="!isLoaded || !searchHits.length" @input.number="adjustView('jump')" v-model="jumpToHit" step="1" min="1" :max="searchHits.length" @submit.prevent>
 								<label for="entire-words-search-toggle">Search entire words</label>
 								<input id="entire-words-search-toggle" type="checkbox" v-model="entireWordsSearchToggle" @change="searchHits = []; currentHit = jumpToHit = 1;">
 								<label for="regex-search-toggle">RegExp Search</label>
