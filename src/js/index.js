@@ -33,6 +33,11 @@ const app = new Vue({ // eslint-disable-line no-undef
 		entireWordsSearchToggle: false,
 		connectionStatuses: ['Connected', 'Left Alive', 'Left Dead', 'Left Won Early', 'Reconnected']
 	},
+	// mounted() {
+	// 	this.chatLogsInput = require('fs').readFileSync(require('path').join(__dirname, '../logs.txt'), 'utf-8');
+	// 	this.matchInfoInput = JSON.stringify(require('../info.json'));
+	// 	this.loadMatch();
+	// },
 	methods: {
 		loadMatch() {
 			if (!this.matchInfoInput || !this.chatLogsInput) return;
