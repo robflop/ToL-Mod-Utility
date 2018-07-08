@@ -56,7 +56,7 @@
 					
 						<div id="general-config" v-show="view === 'generalConfig'">
 							<label for="type-select">Type filter: </label>
-							<select id="type-select" v-model="selectedType" :disabled="!isLoaded" @change="filter()">
+							<select id="type-select" v-model="selectedType" :disabled="!isLoaded" @change="filter(); logsSearch();">
 								<option selected>All</option>
 								<option>Day</option>
 								<option>Alive</option>
@@ -73,13 +73,13 @@
 							</select>
 						
 							<label for="day-select">Day filter: </label>
-							<select id="day-select" v-model="selectedDay" :disabled="!isLoaded" @change="filter()">
+							<select id="day-select" v-model="selectedDay" :disabled="!isLoaded" @change="filter(); logsSearch();">
 								<option selected>All</option>
 								<option v-for="day in days">Day {{ day }}</option>
 							</select>
 						
 							<label for="night-select">Night filter: </label>
-							<select id="night-select" v-model="selectedNight" :disabled="!isLoaded" @change="filter()">
+							<select id="night-select" v-model="selectedNight" :disabled="!isLoaded" @change="filter(); logsSearch();">
 								<option selected>All</option>
 								<option v-for="night in nights">Night {{ night }}</option>
 							</select>
@@ -94,14 +94,14 @@
 						<div id="player-options" v-show="view === 'playerOptions'">
 							<span id="highlight-player-span">H</span>
 							<span id="filter-player-span">F</span>
-							<button id="reset-player-options" @click.prevent="highlightedPlayers = []; filteredPlayers = []; filter()">Clear selection</button>
+							<button id="reset-player-options" @click.prevent="highlightedPlayers = []; filteredPlayers = []; filter(); logsSearch();">Clear selection</button>
 							<div id="player-options-container">
 								<form method="post">
 									<div v-for="player in parsedMatchInfo">
 										<input type="checkbox" :id="`${player.ign}-highlight`" :value="`${player.ign} [${parseInt(player.piIndex) + 1}]`"
 										v-model="highlightedPlayers" :disabled="!isLoaded">
 										<input type="checkbox" :id="`${player.ign}-filter`" :value="`${player.ign} [${parseInt(player.piIndex) + 1}]`"
-										v-model="filteredPlayers" :disabled="!isLoaded" @change="filter()">
+										v-model="filteredPlayers" :disabled="!isLoaded" @change="filter(); logsSearch();">
 										<label :for="`${player.ign}-filter`">
 											<span class="player-filter-ign">{{ player.ign }}</span>
 											<span class="player-filter-num">[{{ player.piIndex + 1 }}]</span>
@@ -114,7 +114,7 @@
 						<div id="text-search" v-show="view === 'textSearch'">
 							<form id="search-options" method="post" @submit.prevent>
 								<label for="search-term">Search term/phrase/expr: </label>
-								<input id="search-term" type="search" v-model="searchInput" :disabled="!isLoaded" @input="searchHits = []; currentHit = jumpToHit = 1;">
+								<input id="search-term" type="search" v-model="searchInput" :disabled="!isLoaded" @input="logsSearch();">
 								<p>Matches found: {{ searchHits.length }}</p>
 								<button id="search-previous" :disabled="!isLoaded || !searchHits.length" @click.prevent="adjustView('backwards')">&lt;</button>
 								<span id="search-current">{{ currentHit }}</span>
@@ -122,29 +122,29 @@
 								<label for="search-hit-input">Jump to: </label>
 								<input type="number" :disabled="!isLoaded || !searchHits.length" @input.number="adjustView('jump')" v-model="jumpToHit" step="1" min="1" :max="searchHits.length" @submit.prevent>
 								<label for="entire-words-search-toggle">Search entire words</label>
-								<input id="entire-words-search-toggle" type="checkbox" v-model="entireWordsSearchToggle" @change="searchHits = []; currentHit = jumpToHit = 1;">
+								<input id="entire-words-search-toggle" type="checkbox" v-model="entireWordsSearchToggle" @change="logsSearch();">
 								<label for="regex-search-toggle">RegExp Search</label>
-								<input id="regex-search-toggle" type="checkbox" v-model="regexSearchToggle" @change="searchHits = []; currentHit = jumpToHit = 1; regexFlags = [];">
+								<input id="regex-search-toggle" type="checkbox" v-model="regexSearchToggle" @change="logsSearch();">
 								<div id="regex-flags-wrapper">
 									<div class="regex-flags">
 										<label for="regex-flag-g" title="Global search">G</label>
-										<input id="regex-flag-g" type="checkbox" value="g" v-model="regexFlags" :disabled="!regexSearchToggle" @change="searchHits = []; currentHit = jumpToHit = 1;">
+										<input id="regex-flag-g" type="checkbox" value="g" v-model="regexFlags" :disabled="!regexSearchToggle" @change="logsSearch();">
 									</div>
 									<div class="regex-flags">
 										<label for="regex-flag-i" title="Case-insensitive search">I</label>
-										<input id="regex-flag-i" type="checkbox" value="i" v-model="regexFlags" :disabled="!regexSearchToggle" @change="searchHits = []; currentHit = jumpToHit = 1;">
+										<input id="regex-flag-i" type="checkbox" value="i" v-model="regexFlags" :disabled="!regexSearchToggle" @change="logsSearch();">
 									</div>
 									<div class="regex-flags">
 										<label for="regex-flag-m" title="Multi-line search">M</label>
-										<input id="regex-flag-m" type="checkbox" value="m" v-model="regexFlags" :disabled="!regexSearchToggle" @change="searchHits = []; currentHit = jumpToHit = 1;">
+										<input id="regex-flag-m" type="checkbox" value="m" v-model="regexFlags" :disabled="!regexSearchToggle" @change="logsSearch();">
 									</div>
 									<div class="regex-flags">
 										<label for="regex-flag-u" title="Unicode sequence search">U</label>
-										<input id="regex-flag-u" type="checkbox" value="u" v-model="regexFlags" :disabled="!regexSearchToggle" @change="searchHits = []; currentHit = jumpToHit = 1;">
+										<input id="regex-flag-u" type="checkbox" value="u" v-model="regexFlags" :disabled="!regexSearchToggle" @change="logsSearch();">
 									</div>
 									<div class="regex-flags">
 										<label for="regex-flag-y" title="Sticky search">Y</label>
-										<input id="regex-flag-y" type="checkbox" value="y" v-model="regexFlags" :disabled="!regexSearchToggle" @change="searchHits = []; currentHit = jumpToHit = 1;">
+										<input id="regex-flag-y" type="checkbox" value="y" v-model="regexFlags" :disabled="!regexSearchToggle" @change="logsSearch();">
 									</div>
 								</div>
 							</form>
@@ -174,10 +174,10 @@
 			
 				<div id="chat-log-wrapper">
 					<div v-if="!tableDisplayToggle">
-						<span v-for="log in parsedChatLogs" :id="`log-line-${parsedChatLogs.indexOf(log) + 1}`" :class="[checkType(log), extraStylingCheck(log)]">{{ log }}</span>
+						<span v-for="(log, index) in parsedChatLogs" :id="`log-line-${parsedChatLogs.indexOf(log) + 1}`" :class="[checkType(log), extraStylingCheck(log, index)]">{{ log }}</span>
 					</div>
 					<table v-if="tableDisplayToggle">
-						<tr v-for="log in parsedChatLogs" :id="`log-line-${parsedChatLogs.indexOf(log) + 1}`" :class="[checkType(log.original), extraStylingCheck(log.original)]">
+						<tr v-for="(log, index) in parsedChatLogs" :id="`log-line-${parsedChatLogs.indexOf(log) + 1}`" :class="[checkType(log.original), extraStylingCheck(log.original, index)]">
 							<td>{{ log.meta }}</td>
 							<td>{{ log.content }}</td>
 						</tr>

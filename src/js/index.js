@@ -184,21 +184,19 @@ const app = new Vue({ // eslint-disable-line no-undef
 			else return logType;
 		},
 
-		extraStylingCheck(log) {
-			const classes = [];
-			const logLine = `log-line-${this.parsedChatLogs.indexOf(log)}`;
-			let searchHit = false;
+		logsSearch() {
+			this.searchHits = [];
+			this.currentHit = this.jumpToHit = 1;
+			// Clear search results from prev. search
 
-			if (this.seperatorsToggle) {
-				classes.push('seperator');
-				classes.push('seperator-thin');
-				// Seperate classes in case a 2nd seperator type is requested (thicker, thinner, etc)
-			}
-			if (this.highlightedPlayers.length && this.highlightedPlayers.some(player => log.includes(player))) classes.push('highlight-player');
+			this.parsedChatLogs.forEach((log, index) => {
+				let searchHit = false;
 
-			if (this.searchInput) {
-				if (!this.regexSearchToggle && !this.entireWordsSearchToggle) {
+				if (!this.entireWordsSearchToggle && !this.regexSearchToggle) {
 					if (log.toLowerCase().includes(this.searchInput.toLowerCase())) searchHit = true;
+				}
+				else if (this.entireWordsSearchToggle) {
+					if (this.searchInput.split(' ').every(searchWord => log.split(' ').includes(searchWord))) searchHit = true;
 				}
 				else if (this.regexSearchToggle) {
 					let searchRegex;
@@ -212,14 +210,25 @@ const app = new Vue({ // eslint-disable-line no-undef
 
 					if (searchRegex && searchRegex.test(log)) searchHit = true;
 				}
-				else if (this.entireWordsSearchToggle) {
-					if (this.searchInput.split(' ').every(searchWord => log.split(' ').includes(searchWord))) searchHit = true;
-				}
 
 				if (searchHit) {
-					if (!this.searchHits.includes(logLine)) this.searchHits.push(logLine); // For anchor navigation
-					classes.push('highlight-search');
+					if (!this.searchHits.includes(index)) this.searchHits.push(index); // For anchor navigation
 				}
+			});
+		},
+
+		extraStylingCheck(log, index) {
+			const classes = [];
+
+			if (this.seperatorsToggle) {
+				classes.push('seperator');
+				classes.push('seperator-thin');
+				// Seperate classes in case a 2nd seperator type is requested (thicker, thinner, etc)
+			}
+			if (this.highlightedPlayers.length && this.highlightedPlayers.some(player => log.includes(player))) classes.push('highlight-player');
+
+			if (this.searchHits.length) {
+				if (this.searchHits.includes(index)) classes.push('highlight-search');
 			}
 
 			return classes;
