@@ -211,9 +211,7 @@ const app = new Vue({ // eslint-disable-line no-undef
 					if (searchRegex && searchRegex.test(log)) searchHit = true;
 				}
 
-				if (searchHit) {
-					if (!this.searchHits.includes(index)) this.searchHits.push(index); // For anchor navigation
-				}
+				if (searchHit && !this.searchHits.includes(index)) this.searchHits.push(index); // For anchor navigation
 			});
 		},
 
