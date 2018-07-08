@@ -66,9 +66,22 @@ const app = new Vue({ // eslint-disable-line no-undef
 				});
 
 			this.parsedTableChatLogs = this.parsedChatLogs.map(line => {
-				const lineParts = line.startsWith('From') // Only Whispers start like this and have multiple colons
-					? this.splitWhisper(line)
-					: line.split(':').map(linePart => linePart = linePart.trim());
+				let lineParts = [];
+
+				if (line.startsWith('From')) {
+					let currentIndex = 0;
+
+					for (let i = 0; i < 3; i++) { // 3 because whispers have 3 colons in total
+						currentIndex = line.indexOf(':', currentIndex) + 1;
+						// Increment by one so it's one past the latest match
+					}
+
+					lineParts = [line.substring(0, currentIndex - 3), line.substring(currentIndex)];
+					// Minus 3 because the last 3 character are unnecessary whitespace and colons
+				}
+				else {
+					lineParts = line.split(':').map(linePart => linePart = linePart.trim());
+				}
 
 				if (lineParts[0] && lineParts[1]) lineParts[0] = `${lineParts[0]}:`;
 				// Restore the colon in front of the first part that was cut off when splitting
@@ -205,10 +218,6 @@ const app = new Vue({ // eslint-disable-line no-undef
 			});
 
 			return faction;
-		},
-
-		checkConnection(playerConnection) {
-			return this.connectionStatuses[playerConnection].replace(/\s+/g, '-').toLowerCase();
 		},
 
 		checkType(log) {
@@ -385,16 +394,8 @@ const app = new Vue({ // eslint-disable-line no-undef
 			this.currentHit = this.jumpToHit = 1;
 		},
 
-		splitWhisper(line) {
-			let currentIndex = 0;
 
-			for (let i = 0; i < 3; i++) { // 3 because whispers have 3 colons in total
-				currentIndex = line.indexOf(':', currentIndex) + 1;
-				// Increment by one so it's one past the latest match
-			}
 
-			return [line.substring(0, currentIndex - 3), line.substring(currentIndex)];
-			// Minus 3 because the last 3 character are unnecessary whitespace and colons
 		},
 
 		openMeasurePrep() {
