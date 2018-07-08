@@ -252,7 +252,7 @@ const app = new Vue({ // eslint-disable-line no-undef
 
 				if (this.selectedType === 'Whisper') {
 					// Whispers are special because they don't follow the format of other types
-					const whisperRegex = /From [\w\s]+ \[\d+] \([\w\s]+\):/;
+					const whisperRegex = /From [\w\s\.]+ \[\d+\] \([\w\s\.]+\):/;
 
 					this.savedChatLogs.forEach((line, index) => {
 						if (whisperRegex.test(line) || line.startsWith('(Day)') || line.startsWith('(Win)')) {
