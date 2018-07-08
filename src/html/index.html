@@ -116,11 +116,11 @@
 								<label for="search-term">Search term/phrase/expr: </label>
 								<input id="search-term" type="search" v-model="searchInput" :disabled="!isLoaded" @input="searchHits = []; currentHit = jumpToHit = 1;">
 								<p>Matches found: {{ searchHits.length }}</p>
-								<button id="search-previous" @click.prevent="adjustView(false)" :disabled="!isLoaded || !searchHits.length">&lt;</button>
+								<button id="search-previous" @click.prevent="adjustView('backwards')" :disabled="!isLoaded || !searchHits.length">&lt;</button>
 								<span id="search-current">{{ currentHit }}</span>
-								<button id="search-next" @click.prevent="adjustView(true)" :disabled="!isLoaded || !searchHits.length">&gt;</button>
+								<button id="search-next" @click.prevent="adjustView('forwards')" :disabled="!isLoaded || !searchHits.length">&gt;</button>
 								<label for="search-hit-input">Jump to: </label>
-								<input type="number" @input.number="adjustView(null, jumpToHit)" v-model="jumpToHit" step="1" min="1" :max="searchHits.length" :disabled="!isLoaded || !searchHits.length" @submit.prevent>
+								<input type="number" @input.number="adjustView('jump')" v-model="jumpToHit" step="1" min="1" :max="searchHits.length" :disabled="!isLoaded || !searchHits.length" @submit.prevent>
 								<label for="entire-words-search-toggle">Search entire words</label>
 								<input id="entire-words-search-toggle" type="checkbox" v-model="entireWordsSearchToggle" @change="searchHits = []; currentHit = jumpToHit = 1;">
 								<label for="regex-search-toggle">RegExp Search</label>

@@ -229,29 +229,29 @@ const app = new Vue({ // eslint-disable-line no-undef
 			else return logType;
 		},
 
-		adjustView(forward, jumpTo) {
-			if (forward) {
+		adjustView(direction) {
+			if (direction === 'forwards') {
 				if (parseInt(this.currentHit) + 1 > this.searchHits.length) this.currentHit = 1;
 				// Jumping to first match if next number would go out of range
 				else ++this.currentHit;
 			}
-			else if (forward === false) {
-			// Explicit false check because jumping passes "null" which is also falsy
+			else if (direction === 'backwards') {
 				if (parseInt(this.currentHit) - 1 < 1) this.currentHit = this.searchHits.length;
 				// Jump to last match if previous number would go negative
 				else --this.currentHit;
 			}
-
-			if (jumpTo && jumpTo > this.searchHits.length) {
-				this.jumpToHit = this.currentHit = this.searchHits.length;
-				// If trying to jump out of range set to last hit
-			}
-			if (jumpTo && jumpTo < 1) {
-				this.jumpToHit = this.currentHit = 1;
-				// Prevent jumps to negative numbers
-			}
-			if (jumpTo && jumpTo <= this.searchHits.length) {
-				this.currentHit = jumpTo;
+			else if (direction === 'jump') {
+				if (this.jumpToHit > this.searchHits.length) {
+					this.jumpToHit = this.currentHit = this.searchHits.length;
+					// If trying to jump out of range set to last hit
+				}
+				if (this.jumpToHit < 1) {
+					this.jumpToHit = this.currentHit = 1;
+					// Prevent jumps to negative numbers
+				}
+				if (this.jumpToHit <= this.searchHits.length) {
+					this.currentHit = this.jumpToHit;
+				}
 			}
 
 			if (window.location.href.includes('log-line')) {
