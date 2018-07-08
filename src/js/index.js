@@ -194,6 +194,9 @@ const app = new Vue({ // eslint-disable-line no-undef
 			this.currentHit = this.jumpToHit = 1;
 			// Clear search results from prev. search
 
+			if (this.searchInput === '') return;
+			// For when re-running search on filter changes but there was no search input before the filter change
+
 			this.parsedChatLogs.forEach((log, index) => {
 				let searchHit = false;
 
