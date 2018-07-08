@@ -94,6 +94,8 @@ const app = new Vue({ // eslint-disable-line no-undef
 
 				if (player.leftGameReason === 'Reconnected') player.pConInt = 4;
 				// Adjust connection status if reconnected
+				player.connectionClass = this.connectionStatuses[player.pConInt].replace(/\s+/g, '-').toLowerCase();
+				// Give property for connection status in words (for css)
 
 				if (player.piIndex !== -1) return matchInfo.concat(player);
 				// Only process players that may not have loaded
@@ -126,7 +128,7 @@ const app = new Vue({ // eslint-disable-line no-undef
 					return matchInfo;
 				}
 			}, []).sort((a, b) => a.piIndex - b.piIndex);
-			// Sort by piIndex for proper listing in filters view	
+			// Sort by piIndex for proper listing in filters view
 
 			const measuresWindow = remote.BrowserWindow.getAllWindows()[1];
 			if (measuresWindow) measuresWindow.webContents.send('match-load', this.parsedMatchInfo);

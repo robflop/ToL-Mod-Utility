@@ -166,7 +166,7 @@
 							<span class="player-end-info" :class="checkFaction(player.endFaction)">{{ player.endClass }} ({{ player.endFaction }}).</span>
 							<br>
 							<span class="player-game-result" :class="player.won ? 'won' : 'lost'">Won? {{ player.won }}.</span>
-							<span class="player-connection-status" :class="checkConnection(player.pConInt)">Connection Status: {{ connectionStatuses[player.pConInt] }}.</span>
+							<span class="player-connection-status" :class="player.connectionClass">Connection Status: {{ connectionStatuses[player.pConInt] }}.</span>
 							<span class="selected-journal-info" v-show="selectedPlayerJournal === player.pid">Player Journal currently displayed on the right.</span>
 						</li>
 					</ol>
