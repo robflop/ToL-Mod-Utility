@@ -371,13 +371,13 @@ const app = new Vue({ // eslint-disable-line no-undef
 
 			if (window.location.href.includes('log-line')) {
 				if (window.location.href.includes('log-line--1')) {
-					window.location.href = window.location.href.replace('#log-line--1', `#${this.searchHits[this.currentHit - 1]}`);
+					return window.location.href = window.location.href.replace('#log-line--1', `#log-line-${this.searchHits[this.currentHit - 1]}`);
 				}
-				window.location.href = window.location.href.replace(/#log-line-\d+/, `#${this.searchHits[this.currentHit - 1]}`);
+				return window.location.href = window.location.href.replace(/#log-line-\d+/, `#log-line-${this.searchHits[this.currentHit - 1]}`);
 			}
 			else {
-				if (this.currentHit - 1 < 0) return window.location.href += `#${this.searchHits[0]}`;
-				else window.location.href += `#${this.searchHits[this.currentHit - 1]}`;
+				if (this.currentHit - 1 < 0) return window.location.href += `#log-line-${this.searchHits[0]}`;
+				else return window.location.href += `#log-line-${this.searchHits[this.currentHit - 1]}`;
 			} // Substracting 1 from the selection cuz of zero-basing on array indices, first hit would be the second in the searchHits list otherwise
 		},
 
