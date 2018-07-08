@@ -63,7 +63,7 @@ const app = new Vue({ // eslint-disable-line no-undef
 					if (formattingTagRegex.test(line)) line.match(formattingTagRegex).forEach(match => line = line.replace(match, ''));
 					// Check lines for formatting tags like "<i>..</i>" etc and remove them
 					return line.trim();
-				});
+				}).filter(line => line !== '' ? true : false); // eslint-disable-line no-unneeded-ternary
 
 			this.parsedTableChatLogs = this.parsedChatLogs.map(line => {
 				let lineParts = [];
@@ -214,6 +214,8 @@ const app = new Vue({ // eslint-disable-line no-undef
 				if (searchHit && !this.searchHits.includes(index)) this.searchHits.push(index); // For anchor navigation
 			});
 		},
+
+		/* ^ Search needs to be before styling check because otherwise the search hits won't be given the search highlight below ^ */
 
 		extraStylingCheck(log, index) {
 			const classes = [];
