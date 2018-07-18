@@ -122,11 +122,17 @@ const app = new Vue({ // eslint-disable-line no-undef
 				// Special characters in account names cause trouble (log/matchinfo mismatch), so take em out
 				// eslint-disable-next-line max-len
 				const playerInfoRegex = new RegExp(`(?:\\([\\w+\\s]*?to)?\\s([\\w+\\s]+)\\s\\[(\\d+)\\]\\s\\((${easyDName}(?:.+)?)\\s-\\s([\\w\\s]+)\\)\\)?`);
-				const playerLine = this.parsedChatLogs.find(line => playerInfoRegex.test(line));
+
+				// eslint-disable-next-line max-len
+				// const playerInfoWhisperRegex = new RegExp(`From\\s([\\w\\s]+)\\s\\[(\\d+)\\]\\s\\(((${easyDName})?(?:[\\w\\s?!]+)?)\\):\\sto\\s([\\w\\s]+)\\s\\[(\\d+)\\]\\s\\(((?(4)(?:[\\w\\s?!]+)|${easyDName}))\\)`);
+				// Nope nope nope, whisper matching no work
+
+				const playerLine = this.parsedChatLogs.find(line => playerInfoRegex.test(line)/* || playerInfoWhisperRegex.test(line)*/);
+				// Oof commented out whisper matching attempts
 
 				if (playerLine) {
 					if (!playerLine.startsWith('From')) {
-						// Whispers are too annoying to analyze, so only doing others
+					// Whispers are too annoying to analyze, so only doing others
 						const playerInfo = playerLine.match(playerInfoRegex);
 
 						if (playerInfo) {
@@ -138,6 +144,30 @@ const app = new Vue({ // eslint-disable-line no-undef
 							player.startClass = playerInfo[4];
 						} // Fill out some of the basic info missing in the supplied match info
 					}
+					// else {
+
+					// // Whisper matching is ungodly, conditional statements don't work in JS regex
+					// // Don't try this at home, kids.
+
+					// 	const playerInfo = playerLine.match(playerInfoWhisperRegex);
+					// 	const firstPlayerName = playerInfo[3].replace(/["!{}=,\[\]\?\(\)]*/g, '').trim();
+					// 	const secondPlayerName = playerInfo[6].replace(/["!{}=,\[\]\?\(\)]*/g, '').trim();
+
+					// 	if (firstPlayerName === easyDName) {
+					// 	// First player involved in whispering
+					// 		player.ign = playerInfo[1];
+					// 		player.piIndex = playerInfo[2] - 1;
+					// 		// Minus one because of zero-indexing
+					// 		player.dName = playerInfo[3];
+					// 	}
+					// 	else if (secondPlayerName === easyDName) {
+					// 	// First player involved in whispering
+					// 		player.ign = playerInfo[4];
+					// 		player.piIndex = playerInfo[5] - 1;
+					// 		// Minus one because of zero-indexing
+					// 		player.dName = playerInfo[6];
+					// 	}
+					// }
 					player.loadedIngame = true;
 					return matchInfo.concat(player);
 				}
