@@ -49,7 +49,7 @@ const app = new Vue({ // eslint-disable-line no-undef
 			catch (e) {
 				return remote.dialog.showErrorBox('An error occurred loading the match info',
 					`${e}
-					
+
 
 					Make sure you typed everything in / copied it in from the forums without mistakes.
 					If the error persists after doing so, notify robflop of the error and the report it happened in.`
